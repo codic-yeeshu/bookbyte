@@ -1,0 +1,59 @@
+@baseUrl = http://localhost:1001/api
+
+# ========== Auth ===========
+# sing up
+POST {{baseUrl}}/sign-up
+
+{
+    "username": "admin",
+    "email":"admin@gmail.com",
+    "password":"admin",
+    "address":"dont know"
+}
+
+###
+# sing in
+POST {{baseUrl}}/sign-in 
+
+{
+    "username": "admin",
+    "password":"admin",
+}
+###
+
+
+# ============ Admin apis =========
+
+# add book 
+POST {{baseUrl}}/add-book
+Content-Type: application/json
+id: admin_id_here
+Authorization: Bearer admin_token_here
+
+{
+    "url": "https://example.com/book1.jpg",
+    "title": "good Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "price": 299,
+    "desc": "A classic novel set in the 1920s exploring themes of wealth and society.",
+    "language": "English"
+}
+
+###
+# update book info
+PUT {{baseUrl}}/update-book
+Content-Type: application/json
+bookid: book_id_here
+Authorization: Bearer admin_token_here
+
+# update values -> any number of changes
+{
+    "url": "https://example.com/book1.jpg",
+    "title": "good Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "price": 299,
+    "desc": "A classic novel set in the 1920s exploring themes of wealth and society.",
+    "language": "English"
+}
+
+GET {{baseUrl}}/get-all-books
