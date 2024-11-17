@@ -24,13 +24,14 @@
    npm install
    ```
 
-3. Start the server
+3. Create & configure `.env` with the help of `.env.example` file.
+4. Start the server
 
    ```bash
    npm start
    ```
 
-4. Update the server URL in `api.rest` file:
+5. Update the server URL in `api.rest` file:
    ```
    @serverUrl = http://localhost:1001
    ```
