@@ -37,6 +37,8 @@
 
 ## API Documentation
 
+Note: For the easiest experience testing these APIs, please refer to the [Testing APIs with REST Client](#testing-apis-with-rest-client). The `api.rest` file contains all the pre-configured API requests that you can execute directly from VS Code.
+
 ### Authentication APIs
 
 #### Sign Up
