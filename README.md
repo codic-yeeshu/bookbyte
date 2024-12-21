@@ -5,8 +5,11 @@
 - [Setup Instructions](#setup-instructions)
 - [API Documentation](#api-documentation)
   - [Authentication APIs](#authentication-apis)
-  - [Admin APIs](#admin-apis)
-  - [Common APIs](#common-apis)
+  - [User APIs](#user-apis)
+  - [Book APIs](#book-apis)
+  - [Cart APIs](#cart-apis)
+  - [Favourite APIs](#favourite-apis)
+  - [Order APIs](#order-apis)
 - [Testing APIs with REST Client](#testing-apis-with-rest-client)
 
 ## Setup Instructions
@@ -34,6 +37,8 @@
 5. Update the server URL in `api.rest` file:
    ```
    @serverUrl = http://localhost:1001
+   # or
+   @serverUrl = https://bookbyte-dcfk.onrender.com
    ```
 
 ## API Documentation
@@ -45,7 +50,7 @@ Note: For the easiest experience testing these APIs, please refer to the [Testin
 #### Sign Up
 
 ```http
-POST /api/sign-up
+POST /api/auth/sign-up
 Content-Type: application/json
 
 {
@@ -59,7 +64,7 @@ Content-Type: application/json
 #### Sign In
 
 ```http
-POST /api/sign-in
+POST /api/auth/sign-in
 Content-Type: application/json
 
 {
@@ -68,24 +73,42 @@ Content-Type: application/json
 }
 ```
 
-### Admin APIs
+### User APIs
 
-> **Admin Credentials**
->
-> ```json
-> {
->   "username": "admin",
->   "password": "admin"
-> }
-> ```
-
-#### Add Book
+#### Get User Information
 
 ```http
-POST /api/add-book
+GET /api/user/get-user-information
 Headers:
 - Content-Type: application/json
-- id: admin_id
+- id: user_id
+- Authorization: Bearer user_token
+```
+
+#### Update Address
+
+```http
+PUT /api/user/update-address
+Headers:
+- Content-Type: application/json
+- id: user_id
+- Authorization: Bearer user_token
+
+{
+    "address": string
+}
+```
+
+### Book APIs
+
+#### Admin Book Operations
+
+##### Add Book
+
+```http
+POST /api/book/add-book
+Headers:
+- Content-Type: application/json
 - Authorization: Bearer admin_token
 
 {
@@ -98,15 +121,14 @@ Headers:
 }
 ```
 
-#### Update Book
+##### Update Book
 
 ```http
-PUT /api/update-book
+PUT /api/book/update-book
 Headers:
 - Content-Type: application/json
-- id: admin_id
-- bookId: book_id
 - Authorization: Bearer admin_token
+- bookID: book_id
 
 {
     "url": string (optional),
@@ -118,51 +140,163 @@ Headers:
 }
 ```
 
-#### Delete Book
+##### Delete Book
 
 ```http
-DELETE /api/delete-book
+DELETE /api/book/delete-book
 Headers:
-- id: admin_id
-- bookId: book_id
+- Content-Type: application/json
+- Authorization: Bearer admin_token
+- bookID: book_id
+```
+
+#### Common Book Operations
+
+##### Get All Books
+
+```http
+GET /api/book/get-all-books
+Headers:
+- Content-Type: application/json
+- Authorization: Bearer token
+```
+
+##### Get Recent Books
+
+```http
+GET /api/book/get-recent-books
+Headers:
+- Content-Type: application/json
+- Authorization: Bearer token
+```
+
+##### Get Book by ID
+
+```http
+GET /api/book/get-book-by-id/:bookid
+Headers:
+- Content-Type: application/json
+- Authorization: Bearer token
+```
+
+### Cart APIs
+
+#### Add Book to Cart
+
+```http
+PUT /api/cart/add-book-to-cart
+Headers:
+- Content-Type: application/json
+- Authorization: Bearer user_token
+- id: user_id
+- bookID: book_id
+```
+
+#### Remove Book from Cart
+
+```http
+PUT /api/cart/remove-book-from-cart
+Headers:
+- Content-Type: application/json
+- Authorization: Bearer user_token
+- id: user_id
+- bookID: book_id
+```
+
+#### Get User Cart
+
+```http
+GET /api/cart/get-user-cart
+Headers:
+- Content-Type: application/json
+- Authorization: Bearer user_token
+- id: user_id
+```
+
+### Favourite APIs
+
+#### Add Book to Favourites
+
+```http
+PUT /api/favourite/add-book-to-favourite
+Headers:
+- Content-Type: application/json
+- Authorization: Bearer user_token
+- id: user_id
+- bookID: book_id
+```
+
+#### Remove Book from Favourites
+
+```http
+PUT /api/favourite/remove-book-from-favourite
+Headers:
+- Content-Type: application/json
+- Authorization: Bearer user_token
+- id: user_id
+- bookID: book_id
+```
+
+#### Get Favourite Books
+
+```http
+GET /api/favourite/get-favourite-books
+Headers:
+- Content-Type: application/json
+- Authorization: Bearer user_token
+- id: user_id
+```
+
+### Order APIs
+
+#### Admin Order Operations
+
+##### Get All Orders
+
+```http
+GET /api/order/get-all-orders
+Headers:
+- Content-Type: application/json
 - Authorization: Bearer admin_token
 ```
 
-### Common APIs
-
-#### Get User Information
+##### Update Order Status
 
 ```http
-GET /api/get-user-information
-Headers:
-- id: user_id
-- Authorization: Bearer user_token
-```
-
-#### Update Address
-
-```http
-PUT /api/update-address
+PUT /api/order/update-status/:orderId
 Headers:
 - Content-Type: application/json
-- id: user_id
-- Authorization: Bearer user_token
+- Authorization: Bearer admin_token
 
 {
-    "address": string
+    "status": string
 }
 ```
 
-#### Get All Books
+#### User Order Operations
+
+##### Place Order
 
 ```http
-GET /api/get-all-books
+POST /api/order/place-order
+Headers:
+- Content-Type: application/json
+- Authorization: Bearer user_token
+- id: user_id
+
+{
+    "order": array[string] // Array of book IDs
+}
 ```
 
-#### Get Book by ID
+##### Get Order History
 
 ```http
-GET /api/get-book-by-id/:bookId
+GET /api/order/get-order-history
+Headers:
+- Content-Type: application/json
+- Authorization: Bearer user_token
+- id: user_id
 ```
 
 ## Testing APIs with REST Client
@@ -175,7 +309,13 @@ GET /api/get-book-by-id/:bookId
 
 ### Notes
 
-- Make sure to save the authentication tokens after signing in
-- Replace placeholder values (`user_id`, `admin_token`, etc.) with actual values
-- The admin APIs require admin authentication
+- Remember to update the authentication tokens after signing in
+- Admin operations require admin authentication
 - All protected routes require a valid JWT token in the Authorization header
+- The default admin credentials are:
+  ```json
+  {
+    "username": "admin",
+    "password": "admin"
+  }
+  ```
