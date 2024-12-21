@@ -1,0 +1,296 @@
+# Install Rest client extension in vs code to hit api's directly from here 
+# just use the correct server url, if it's on you local, use the localhost, or the hosted one
+@serverUrl = http://localhost:1001
+# @serverUrl = https://bookbyte-dcfk.onrender.com
+@baseUrl = {{serverUrl}}/api
+@authUrl = {{baseUrl}}/auth
+@bookUrl = {{baseUrl}}/book
+@userUrl = {{baseUrl}}/user
+@cartUrl = {{baseUrl}}/cart
+@favouriteUrl = {{baseUrl}}/favourite
+@orderUrl = {{baseUrl}}/order
+
+# use the updated admin and user token.
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzQ3OTE0OTksImV4cCI6MTczNTY1NTQ5OX0.hFMpSWm6dWzKdCf8yOQj3fcvBemePCoEz94DlEaxl-c
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoibmV3dGVzdCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM0NzkxMzk5LCJleHAiOjE3MzU2NTUzOTl9.m-wWjChjxcgtTW58rpOQDp23aap4LUgy82wNcv6ZFk4
+@adminId = 6766cf890f5a6168322bbb51
+@userId = 6766cf6a0f5a6168322bbb4d
+@bookId = 6766d4a42905a337db407214
+@orderId = 6766f8c5123b3668f36b44e3
+# ====================================================================================================
+# ========================================== AUTH ====================================================
+# ====================================================================================================
+
+# use these credentials to perform admin operations
+# {
+#     "username": "admin",
+#     "password":"admin",
+# }
+
+# sing up
+POST {{authUrl}}/sign-up
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "email":"admin@gmail.com",
+    "password":"admin",
+    "address":"dont know"
+}
+
+###
+# sing in
+POST {{authUrl}}/sign-in 
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin"
+}
+###
+
+# ====================================================================================================
+# ========================================== USER ====================================================
+# ====================================================================================================
+
+GET {{userUrl}}/get-user-information
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+id: {{userId}}
+# Authorization: Bearer {{adminToken}}
+
+{
+
+}
+
+###
+PUT {{userUrl}}/update-address
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+id: {{userId}}
+# Authorization: Bearer {{adminToken}}
+
+{
+    "address" : "now i know"
+}
+
+###
+
+
+# ====================================================================================================
+# ========================================== BOOK ====================================================
+# ====================================================================================================
+
+
+############## admin specific apis #######################
+POST {{bookUrl}}/add-book
+Content-Type: application/json
+# Authorization: Bearer {{userToken}}
+Authorization: Bearer {{adminToken}}
+
+{
+    "url": "https://example.com/book1.jpg",
+    "title": "good Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "price": 299,
+    "desc": "A classic novel set in the 1920s exploring themes of wealth and society.",
+    "language": "English"
+}
+
+###
+PUT {{bookUrl}}/update-book
+Content-Type: application/json
+# Authorization: Bearer {{userToken}}
+Authorization: Bearer {{adminToken}}
+bookID: 6766d4a42905a337db407214
+
+# update values -> any number of changes
+{
+    "url": "https://example.com/book1.jpg",
+    "title": "good at Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "price": 299,
+    "desc": "A classic novel set in the 1920s exploring themes of wealth and society.",
+    "language": "English"
+}
+
+###
+DELETE {{bookUrl}}/delete-book
+Content-Type: application/json
+# Authorization: Bearer {{userToken}}
+bookID: 6766d4a42905a337db407214
+Authorization: Bearer {{adminToken}}
+
+{
+
+}
+
+###
+########### common apis ###############
+
+GET {{bookUrl}}/get-all-books
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+# Authorization: Bearer {{adminToken}}
+
+{
+
+}
+
+###
+GET {{bookUrl}}/get-recent-books
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+# Authorization: Bearer {{adminToken}}
+
+{
+
+}
+
+###
+GET {{bookUrl}}/get-book-by-id/:bookid
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+# Authorization: Bearer {{adminToken}}
+
+{
+
+}
+
+###
+
+
+
+# ====================================================================================================
+# ========================================== CART ====================================================
+# ====================================================================================================
+
+PUT {{cartUrl}}/add-book-to-cart
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+id: {{userId}}
+bookID: {{bookId}}
+# Authorization: Bearer {{adminToken}}
+
+{
+
+}
+
+###
+PUT {{cartUrl}}/remove-book-from-cart
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+id: {{userId}}
+bookID: {{bookId}}
+# Authorization: Bearer {{adminToken}}
+
+{
+
+}
+
+###
+GET {{cartUrl}}/get-user-cart
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+id: {{userId}}
+# Authorization: Bearer {{adminToken}}
+
+{
+
+}
+
+###
+
+
+
+# ====================================================================================================
+# ========================================== FAVOURITE ===============================================
+# ====================================================================================================
+
+PUT {{favouriteUrl}}/add-book-to-favourite
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+id: {{userId}}
+bookID: {{bookId}}
+# Authorization: Bearer {{adminToken}}
+
+{
+
+}
+
+###
+PUT {{favouriteUrl}}/remove-book-from-favourite
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+id: {{userId}}
+bookID: {{bookId}}
+# Authorization: Bearer {{adminToken}}
+
+{
+
+}
+
+###
+GET {{favouriteUrl}}/get-favourite-books
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+id: {{userId}}
+# Authorization: Bearer {{adminToken}}
+
+{
+
+}
+###
+
+
+# ====================================================================================================
+# ========================================== ORDER ===================================================
+# ====================================================================================================
+
+############# admin specific apis ################
+GET {{orderUrl}}/get-all-orders
+Content-Type: application/json
+# Authorization: Bearer {{userToken}}
+Authorization: Bearer {{adminToken}}
+
+{
+
+}
+
+###
+
+PUT {{orderUrl}}/update-status/{{orderId}}
+Content-Type: application/json
+# Authorization: Bearer {{userToken}}
+Authorization: Bearer {{adminToken}}
+
+{
+    "status": "Canceled"
+}
+
+###
+
+
+##################### common apis ##################
+POST {{orderUrl}}/place-order
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+id: {{userId}}
+# Authorization: Bearer {{adminToken}}
+
+{
+    "order": ["6766d4a42905a337db407214"]
+}
+
+###
+GET {{orderUrl}}/get-order-history
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+id: {{userId}}
+# Authorization: Bearer {{adminToken}}
+
+{
+
+}
+
+###
