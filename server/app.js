@@ -4,7 +4,7 @@ require("dotenv").config();
 app.use(express.json());
 require("./config/dbConn");
 
-const PORT = process.env.PORT || 1000;
+const PORT = process.env.PORT;
 
 const { authRouter } = require("./routes/auth");
 const { userRouter } = require("./routes/user");
