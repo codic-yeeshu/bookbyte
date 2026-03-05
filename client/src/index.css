@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------ */
+/* Root Theme Tokens  */
+/* ------------------ */
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+
+  --border: #e6eaf0;
+  --input: #e2e8f0;
+  --ring: #6366f1;
+
+  --font-sans: "Inter", "Geist", system-ui, -apple-system, sans-serif;
+  --font-serif: "Merriweather", Georgia, serif;
+}
+
+/* ------------------ */
+/* Dark Theme Tokens  */
+/* ------------------ */
+
+.dark {
+  --background: #0f172a;
+  --foreground: #e6edf6;
+
+  --card: #18181b;
+  --card-foreground: #f1f5f9;
+
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+
+  --border: #1e293b;
+  --input: #1e293b;
+  --ring: #818cf8;
+}
+
+/* ------------------ */
+/* Tailwind Theme Map */
+/* ------------------ */
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-border: var(--border);
+
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+
+  --animate-float: float 3s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}
+
+/* ------------------ */
+/* Base Layer         */
+/* ------------------ */
+
+@layer base {
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02","cv03","cv04","cv11";
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    border-color: var(--border);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+/* ------------------ */
+/* Components         */
+/* ------------------ */
+
+@layer components {
+
+  .book-card {
+    @apply bg-card text-card-foreground
+           rounded-xl border border-border
+           shadow-sm hover:shadow-xl
+           hover:border-primary/50
+           transition-all duration-300
+           overflow-hidden;
+  }
+
+  .glass-nav {
+    @apply sticky top-0 z-50
+           backdrop-blur-md
+           bg-background/70
+           border-b border-border;
+  }
+
+  .book-title {
+    @apply font-serif font-bold tracking-tight text-xl;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground
+           px-6 py-2.5 rounded-lg
+           font-medium
+           transition-all
+           active:scale-95
+           hover:opacity-90
+           focus:outline-none
+           focus-visible:ring-2
+           focus-visible:ring-ring
+           focus-visible:ring-offset-2;
+
+    box-shadow: 0 0 15px rgba(99,102,241,0.3);
+  }
+}
+
+/* ------------------ */
+/* Text Selection     */
+/* ------------------ */
+
+::selection {
+  @apply bg-primary/30 text-primary;
+}
+
+/* ------------------ */
+/* Reduced Motion     */
+/* ------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+}
