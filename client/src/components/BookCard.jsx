@@ -2,6 +2,17 @@ import React, { useState } from 'react';
 import { Heart, ShoppingCart, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { clsx } from 'clsx';
+import { Cloudinary } from '@cloudinary/url-gen';
+import { auto as autoQuality } from '@cloudinary/url-gen/qualifiers/quality';
+import { auto as autoFormat } from '@cloudinary/url-gen/qualifiers/format';
+import { scale } from '@cloudinary/url-gen/actions/resize';
+
+const cld = new Cloudinary({ cloud: { cloudName: 'demo' } });
+
+const optimizeImageUrl = (url) => {
+  if (!url || !url.includes('upload/')) return url;
+  return url.replace('/upload/', '/upload/f_auto,q_auto,w_1000/');
+};
 
 const BookCard = ({ book }) => {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -21,12 +32,14 @@ const BookCard = ({ book }) => {
     setIsFavorite(!isFavorite);
   };
 
+  const optimizedUrl = optimizeImageUrl(url);
+
   return (
-    <div className="group relative bg-card rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:border-primary/30">
+    <div className="group relative bg-card rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:border-primary/30 flex flex-col h-full">
       {/* Book Cover Container */}
-      <div className="relative aspect-3/4 overflow-hidden bg-foreground/5">
+      <div className="relative aspect-3/4 overflow-hidden bg-foreground/5 shrink-0">
         <img
-          src={url}
+          src={optimizedUrl}
           alt={title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           loading="lazy"
@@ -64,8 +77,8 @@ const BookCard = ({ book }) => {
       </div>
 
       {/* Content */}
-      <div className="p-5">
-        <div className="mb-1">
+      <div className="p-5 flex flex-col flex-1">
+        <div className="mb-2 flex-1">
           <Link to={`/book/${_id}`}>
             <h3 className="text-lg font-bold font-serif leading-tight line-clamp-1 hover:text-primary transition-colors">
               {title}
@@ -74,7 +87,7 @@ const BookCard = ({ book }) => {
           <p className="text-sm text-foreground/50 mt-1">{author}</p>
         </div>
 
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center justify-between mt-auto">
           <span className="text-xl font-black text-primary">₹{price}</span>
           <div className="flex -space-x-1">
             {[1, 2, 3, 4, 5].map(i => (

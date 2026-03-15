@@ -8,7 +8,9 @@ const addBook = async (req, res) => {
         .status(400)
         .json({ message: "You do not have access to add book" });
     const { url, title, author, price, desc, language } = req.body;
-
+    if (!url || !title || !author || !price || !desc || !language) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
     const book = new Book({
       url,
       title,
@@ -35,7 +37,9 @@ const updateBook = async (req, res) => {
         .json({ message: "You do not have access to update book" });
     const bookId = req.headers["bookid"];
     const { url, title, author, price, desc, language } = req.body;
-
+    if (!url || !title || !author || !price || !desc || !language) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
     // Find and update the book
     const updatedBook = await Book.findByIdAndUpdate(
       bookId,

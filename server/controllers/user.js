@@ -2,7 +2,8 @@ const user = require("../models/user");
 
 const getUserInfo = async (req, res) => {
   try {
-    const { id } = req.headers;
+    const { id } = req.user;
+
     const data = await user.findById(id).select("-password");
     return res.status(200).json(data);
   } catch (error) {
@@ -12,7 +13,7 @@ const getUserInfo = async (req, res) => {
 
 const updateAddress = async (req, res) => {
   try {
-    const { id } = req.headers;
+    const { id } = req.user;
     const { address } = req.body;
     await user.findByIdAndUpdate(id, { address });
     return res.status(200).json({ message: "Address Updated Successfully" });

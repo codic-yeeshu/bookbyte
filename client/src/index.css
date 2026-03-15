@@ -29,13 +29,13 @@
 /* ------------------ */
 
 .dark {
-  --background: #0f172a;
+  --background: #0d1019ff;
   --foreground: #e6edf6;
 
-  --card: #18181b;
+  --card: #23232cff;
   --card-foreground: #f1f5f9;
 
-  --primary: #6366f1;
+  --primary: #a0d137ff;
   --primary-foreground: #ffffff;
 
   --border: #1e293b;

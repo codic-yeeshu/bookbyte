@@ -40,7 +40,7 @@ const removeBookFromFavourite = async (req, res) => {
 
 const getFavouriteBooks = async (req, res) => {
   try {
-    const { id } = req.headers;
+    const { id } = req.user;
     const userData = await User.findById(id).populate("favourites");
     const favouriteBooks = userData.favourites;
     return res.status(200).json({

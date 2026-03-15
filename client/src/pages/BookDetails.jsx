@@ -26,6 +26,10 @@ const BookDetails = () => {
   const [successMsg, setSuccessMsg] = useState('');
 
   useEffect(() => {
+  window.scrollTo(0, 0);
+}, [id]);
+
+  useEffect(() => {
     const fetchBook = async () => {
       try {
         const response = await getBookById(id);

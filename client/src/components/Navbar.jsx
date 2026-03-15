@@ -50,8 +50,9 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center space-x-6 text-sm font-medium">
             <Link to="/" className="text-foreground/80 hover:text-primary transition-colors">Home</Link>
-            <Link to="/books" className="text-foreground/80 hover:text-primary transition-colors">All Books</Link>
-            <Link to="/favorites" className="text-foreground/80 hover:text-primary transition-colors">Favorites</Link>
+            <Link to="/discover" className="text-foreground/80 hover:text-primary transition-colors">Discover</Link>
+            <Link to="/favourites" className="text-foreground/80 hover:text-primary transition-colors">Favourites</Link>
+            <Link to="/about" className="text-foreground/80 hover:text-primary transition-colors">About</Link>
           </div>
         </div>
 
@@ -139,8 +140,9 @@ const Navbar = () => {
         <div className="md:hidden border-t border-border py-4 space-y-4 animate-in fade-in slide-in-from-top-2">
           <div className="flex flex-col space-y-3 px-2">
             <Link to="/" className="px-3 py-2 rounded-lg hover:bg-foreground/5 transition-colors">Home</Link>
-            <Link to="/books" className="px-3 py-2 rounded-lg hover:bg-foreground/5 transition-colors">All Books</Link>
-            <Link to="/favorites" className="px-3 py-2 rounded-lg hover:bg-foreground/5 transition-colors">Favorites</Link>
+            <Link to="/discover" className="px-3 py-2 rounded-lg hover:bg-foreground/5 transition-colors">Discover</Link>
+            <Link to="/favourites" className="px-3 py-2 rounded-lg hover:bg-foreground/5 transition-colors">Favourites</Link>
+            <Link to="/about" className="px-3 py-2 rounded-lg hover:bg-foreground/5 transition-colors">About</Link>
 
             <div className="pt-4 border-t border-border mt-2">
               <div className="relative mb-4">

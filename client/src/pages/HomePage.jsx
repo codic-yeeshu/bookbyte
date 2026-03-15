@@ -1,58 +1,102 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getRecentBooks } from '../api/books';
+import { getRecentBooks, getAllBooks } from '../api/books';
 import BookCard from '../components/BookCard';
 import Alert from '../components/Alert';
-import { ArrowRight, Sparkles, BookOpen, Star, User } from 'lucide-react';
+import { ArrowRight, Sparkles, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
 
-const Hero = () => {
+const HeroCarousel = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const slides = [
+    {
+      title: "Discover Your Next Favorite Adventure",
+      subtitle: "Explore a curated collection of thousands of books, from timeless classics to modern masterpieces.",
+      image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1000&auto=format&fit=crop"
+    },
+    {
+      title: "Unlock New Worlds With Every Page",
+      subtitle: "Immerse yourself in stories that will captivate your mind and touch your soul.",
+      image: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1000&auto=format&fit=crop"
+    },
+    {
+      title: "Knowledge is Power, Read More",
+      subtitle: "Gain insights, learn new skills, and expand your horizons with our non-fiction collection.",
+      image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1000&auto=format&fit=crop"
+    }
+  ];
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+
+  useEffect(() => {
+    const timer = setInterval(nextSlide, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <div className="relative overflow-hidden bg-background py-20 sm:py-32">
-      {/* Decorative background blobs */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl opacity-50 animate-pulse" />
-      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-3xl opacity-50" />
+    <div className="relative overflow-hidden bg-background py-10 sm:py-20 rounded-3xl mt-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 group">
+      {/* Decorative blobs */}
+      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-125 h-125 bg-primary/10 rounded-full blur-3xl opacity-50 animate-pulse pointer-events-none" />
+      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-100 h-100 bg-indigo-500/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Your Gateway to Infinite Worlds</span>
-        </div>
-
-        <h1 className="text-5xl sm:text-7xl font-black font-serif tracking-tight text-foreground leading-[1.1] mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000">
-          Discover Your Next <br />
-          <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-indigo-500 drop-shadow-sm">
-            Favorite Adventure
-          </span>
-        </h1>
-
-        <p className="text-lg sm:text-xl text-foreground/60 max-w-2xl mx-auto leading-relaxed mb-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-          Explore a curated collection of thousands of books, from timeless classics to modern masterpieces.
-          Your journey into the extraordinary starts here.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
-          <Link to="/books" className="btn-primary flex items-center space-x-2 group w-full sm:w-auto justify-center">
-            <span>Explore Collection</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-          <Link to="/signup" className="px-8 py-3 rounded-xl border border-border font-bold hover:bg-foreground/5 transition-all w-full sm:w-auto text-center">
-            Join the Community
-          </Link>
-        </div>
-
-        {/* Stats Section */}
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto pt-12 border-t border-border/50 animate-in fade-in duration-1000 delay-500">
-          {[
-            { label: 'Books', value: '10K+', icon: BookOpen },
-            { label: 'Authors', value: '2K+', icon: User },
-            { label: 'Rating', value: '4.9/5', icon: Star },
-            { label: 'Readers', value: '50K+', icon: Sparkles }
-          ].map((stat, idx) => (
-            <div key={idx} className="flex flex-col items-center">
-              <stat.icon className="w-5 h-5 text-primary/40 mb-2" />
-              <span className="text-2xl font-black">{stat.value}</span>
-              <span className="text-xs text-foreground/40 font-medium uppercase tracking-widest">{stat.label}</span>
+      <div className="relative h-100 sm:h-125 rounded-3xl overflow-hidden shadow-2xl border border-border/50">
+        {slides.map((slide, idx) => (
+          <div
+            key={idx}
+            className={`absolute inset-0 transition-opacity duration-1000 ${
+              idx === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+            }`}
+          >
+            <div className="absolute inset-0 bg-black/50 z-10" />
+            <img 
+              src={slide.image} 
+              alt={slide.title} 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-6 sm:p-12">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/20 text-white backdrop-blur-sm text-xs font-bold uppercase tracking-wider mb-6">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Featured Collection</span>
+              </div>
+              <h2 className="text-4xl sm:text-6xl font-black font-serif text-white tracking-tight leading-[1.1] mb-6 max-w-4xl drop-shadow-lg">
+                {slide.title}
+              </h2>
+              <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mb-8 drop-shadow">
+                {slide.subtitle}
+              </p>
+              <Link to="/discover" className="btn-primary flex items-center space-x-2 group/btn justify-center shadow-xl">
+                <span>Explore Collection</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+              </Link>
             </div>
+          </div>
+        ))}
+        
+        {/* Carousel Controls */}
+        <button 
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 p-2 rounded-full bg-black/20 text-white hover:bg-primary/80 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        <button 
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 p-2 rounded-full bg-black/20 text-white hover:bg-primary/80 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+        
+        {/* Indicators */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex space-x-2">
+          {slides.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentSlide(idx)}
+              className={`w-2.5 h-2.5 rounded-full transition-all ${
+                idx === currentSlide ? 'bg-primary w-8' : 'bg-white/50 hover:bg-white'
+              }`}
+            />
           ))}
         </div>
       </div>
@@ -61,39 +105,52 @@ const Hero = () => {
 };
 
 const HomePage = () => {
-  const [books, setBooks] = useState([]);
+  const [recentBooks, setRecentBooks] = useState([]);
+  const [otherBooks, setOtherBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchRecentBooks = async () => {
+    const fetchHomeData = async () => {
       try {
-        const response = await getRecentBooks();
-        // Assuming response is the array of books based on common API patterns
-        setBooks(response.data || response || []);
+        const [recentRes, allRes] = await Promise.all([
+          getRecentBooks(),
+          getAllBooks()
+        ]);
+        
+        // Recent books
+        setRecentBooks(recentRes.data || recentRes || []);
+        
+        // Other books (shuffle and pick 8 that are not in recent, or just pick other subset)
+        const allBooksArray = allRes.data || allRes || [];
+        // Sort randomly to get "other" books
+        const shuffled = [...allBooksArray].sort(() => 0.5 - Math.random());
+        setOtherBooks(shuffled.slice(0, 8));
+        
       } catch (err) {
-        console.error("Error fetching recent books:", err);
-        setError("Unable to load recent books. Please try again later.");
+        console.error("Error fetching home books:", err);
+        setError("Unable to load books. Please try again later.");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchRecentBooks();
+    fetchHomeData();
   }, []);
 
   return (
     <div className="pb-20">
-      <Hero />
+      <HeroCarousel />
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+      {/* Recent Additions */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
         <div className="flex items-end justify-between mb-10">
           <div>
             <h2 className="text-3xl font-bold font-serif tracking-tight">Recent Additions</h2>
             <p className="text-foreground/50 mt-1">Handpicked gems fresh off the press</p>
           </div>
-          <Link to="/books" className="text-sm font-bold text-primary hover:underline flex items-center gap-1 group">
-            View All Books
+          <Link to="/discover" className="text-sm font-bold text-primary hover:underline flex items-center gap-1 group">
+            View All
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
@@ -102,7 +159,7 @@ const HomePage = () => {
 
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {[1, 2, 4, 4].map((i) => (
+            {[1, 2, 3, 4].map((i) => (
               <div key={i} className="animate-pulse">
                 <div className="aspect-3/4 bg-foreground/5 rounded-2xl mb-4" />
                 <div className="h-5 bg-foreground/5 rounded w-3/4 mb-2" />
@@ -112,8 +169,8 @@ const HomePage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {books.length > 0 ? (
-              books.slice(0, 4).map((book) => (
+            {recentBooks.length > 0 ? (
+              recentBooks.slice(0, 4).map((book) => (
                 <BookCard key={book._id} book={book} />
               ))
             ) : (
@@ -122,6 +179,36 @@ const HomePage = () => {
                 <p className="text-foreground/40">No books found in the recent collection.</p>
               </div>
             )}
+          </div>
+        )}
+      </section>
+
+      {/* Other Books */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <h2 className="text-3xl font-bold font-serif tracking-tight">Other Books You May Like</h2>
+            <p className="text-foreground/50 mt-1">Curated selections from our vast catalog</p>
+          </div>
+        </div>
+
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={`other-skel-${i}`} className="animate-pulse">
+                <div className="aspect-3/4 bg-foreground/5 rounded-2xl mb-4" />
+                <div className="h-5 bg-foreground/5 rounded w-3/4 mb-2" />
+                <div className="h-4 bg-foreground/5 rounded w-1/2" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {otherBooks.length > 0 ? (
+              otherBooks.map((book) => (
+                <BookCard key={book._id} book={book} />
+              ))
+            ) : null}
           </div>
         )}
       </section>
@@ -138,7 +225,7 @@ const HomePage = () => {
             <p className="text-foreground/60 mb-8 max-w-md">
               Our AI-powered recommendation engine learns your tastes and suggests your next masterpiece.
             </p>
-            <button className="btn-primary">Get Started Now</button>
+            <Link to="/discover" className="btn-primary inline-flex">Get Started Now</Link>
           </div>
           <div className="flex-1 relative z-10 grid grid-cols-2 gap-4">
             <div className="space-y-4">

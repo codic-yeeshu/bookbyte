@@ -54,6 +54,7 @@ const signIn = async (req, res) => {
         const authClaims = {
           name: existingUser.username,
           role: existingUser.role,
+          id: existingUser._id,
         };
 
         const token = jwt.sign(authClaims, jwt_secret, {
@@ -70,6 +71,7 @@ const signIn = async (req, res) => {
       }
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal Server error" });
   }
 };
