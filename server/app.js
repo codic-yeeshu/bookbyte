@@ -32,21 +32,32 @@ app.use("/api/favourite", favouriteRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 
-const HOSTED_URL = process.env.HOSTED_URL
+const HOSTED_URL = process.env.HOSTED_URL;
+
 function startSelfPing() {
+  if (!HOSTED_URL) {
+    console.error("HOSTED_URL is not defined");
+    return;
+  }
+
   setInterval(async () => {
     try {
-      await axios.get(HOSTED_URL);
+      const res = await fetch(HOSTED_URL);
+
+      if (!res.ok) {
+        throw new Error(`Status: ${res.status}`);
+      }
+
       console.log("Self request fired");
     } catch (err) {
-      console.error("Self request failed");
+      console.error("Self request failed:", err.message);
     }
   }, 60000);
 }
 
-
 app.listen(PORT, () => {
   console.log(`SERVER IS UP ON PORT ${PORT}`, `http://localhost:${PORT}`);
-  startSelfPing()
+  startSelfPing();
 });
+
 module.exports = app;
