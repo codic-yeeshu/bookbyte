@@ -20,6 +20,10 @@ app.get("/", (req, res) => {
   res.send("Hello from BookByte server...");
 });
 
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 // routes
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
@@ -28,7 +32,21 @@ app.use("/api/favourite", favouriteRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 
+const HOSTED_URL = process.env.HOSTED_URL
+function startSelfPing() {
+  setInterval(async () => {
+    try {
+      await axios.get(HOSTED_URL);
+      console.log("Self request fired");
+    } catch (err) {
+      console.error("Self request failed");
+    }
+  }, 60000);
+}
+
+
 app.listen(PORT, () => {
   console.log(`SERVER IS UP ON PORT ${PORT}`, `http://localhost:${PORT}`);
+  startSelfPing()
 });
 module.exports = app;

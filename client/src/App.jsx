@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import axios from 'axios';
+import { CONFIG } from './config';
+import ServerWakeup from './components/ServerWakeup';
 import MainLayout from './layout/MainLayout';
 import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login';
@@ -16,6 +19,61 @@ import AboutPage from './pages/AboutPage';
 import ProfilePage from './pages/ProfilePage';
 
 function App() {
+  const [serverStatus, setServerStatus] = useState('checking'); // 'checking', 'waking', 'awake'
+
+  useEffect(() => {
+    let isMounted = true;
+    let retryInterval;
+
+    const checkServer = async () => {
+      // 1.5 seconds threshold before showing the wakeup screen
+      const timer = setTimeout(() => {
+        if (isMounted) setServerStatus('waking');
+      }, 1500);
+
+      const ping = async () => {
+        try {
+          await axios.get(`${CONFIG.API_URL}/health`);
+          return true; // Server is awake
+        } catch (error) {
+          return false; // Server still sleeping or error
+        }
+      };
+
+      const isAwake = await ping();
+      
+      if (isAwake) {
+        clearTimeout(timer);
+        if (isMounted) setServerStatus('awake');
+      } else {
+        // If failed initially (maybe 502/timeout from Render), poll every 3 seconds
+        retryInterval = setInterval(async () => {
+          const ok = await ping();
+          if (ok) {
+            clearInterval(retryInterval);
+            if (isMounted) setServerStatus('awake');
+          }
+        }, 3000);
+      }
+    };
+
+    checkServer();
+
+    return () => {
+      isMounted = false;
+      if (retryInterval) clearInterval(retryInterval);
+    };
+  }, []);
+
+  if (serverStatus === 'checking') {
+    // Blank screen for the first 1.5s to avoid flashing the loader if server is actually fast
+    return null;
+  }
+
+  if (serverStatus === 'waking') {
+    return <ServerWakeup />;
+  }
+
   return (
     <AuthProvider>
       <Router>
