@@ -3,13 +3,21 @@ import { getFavouriteBooks } from '../api/favourite';
 import BookCard from '../components/BookCard';
 import Alert from '../components/Alert';
 import { Heart, Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const FavouritesPage = () => {
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setIsLoading(false);
+      return;
+    }
+
     const fetchFavourites = async () => {
       try {
         const response = await getFavouriteBooks();
@@ -37,9 +45,18 @@ const FavouritesPage = () => {
         </div>
       </div>
 
-      {error && <Alert type="error" message={error} />}
-
-      {isLoading ? (
+      {!isAuthenticated ? (
+        <div className="py-20 text-center border-2 border-dashed border-border rounded-3xl bg-card/30 animate-in zoom-in-95">
+          <Heart className="w-16 h-16 text-foreground/10 mx-auto mb-4" />
+          <h3 className="text-xl font-bold mb-2">Login Required</h3>
+          <p className="text-foreground/50 max-w-sm mx-auto mb-8">
+            Please log in to view and manage your favourite books.
+          </p>
+          <Link to="/login" className="btn-primary inline-flex">Log In</Link>
+        </div>
+      ) : error ? (
+        <Alert type="error" message={error} />
+      ) : isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="animate-pulse">
