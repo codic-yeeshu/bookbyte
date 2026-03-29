@@ -2,13 +2,14 @@ const User = require("../models/user");
 
 const addBookToCart = async (req, res) => {
   try {
-    const { id, bookid } = req.headers;
+    const { bookId } = req.body;
+    const { id } = req.user;
     const userData = await User.findById(id);
 
-    const isBookinCart = userData.cart.includes(bookid);
+    const isBookinCart = userData.cart.includes(bookId);
     if (isBookinCart)
       return res.status(200).json({ msg: "Book is already in Cart." });
-    await User.findByIdAndUpdate(id, { $push: { cart: bookid } });
+    await User.findByIdAndUpdate(id, { $push: { cart: bookId } });
     return res.status(200).json({ msg: "Book added to Cart." });
   } catch (err) {
     console.error(
@@ -21,12 +22,13 @@ const addBookToCart = async (req, res) => {
 
 const removeBookFromCart = async (req, res) => {
   try {
-    const { bookid, id } = req.headers;
+    const { bookId } = req.body;
+    const { id } = req.user;
     const userData = await User.findById(id);
 
-    const isBookinCart = userData.cart.includes(bookid);
+    const isBookinCart = userData.cart.includes(bookId);
     if (isBookinCart)
-      await User.findByIdAndUpdate(id, { $pull: { cart: bookid } });
+      await User.findByIdAndUpdate(id, { $pull: { cart: bookId } });
 
     return res.status(200).json({ msg: "Book removed from Cart." });
   } catch (err) {
@@ -40,7 +42,7 @@ const removeBookFromCart = async (req, res) => {
 
 const getCartBooks = async (req, res) => {
   try {
-    const { id } = req.headers;
+    const { id } = req.user;
     const userData = await User.findById(id).populate("cart");
     const cartBooks = userData.cart.reverse();
     return res.status(200).json({

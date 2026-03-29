@@ -31,6 +31,11 @@ export const getRecentBooks = async () => {
   return response.data;
 };
 
+export const getRandomBooks = async () => {
+  const response = await api.get('/book/get-random-books');
+  return response.data;
+};
+
 export const getBookById = async (bookId) => {
   const response = await api.get(`/book/get-book-by-id/${bookId}`);
   return response.data;

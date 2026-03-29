@@ -2,13 +2,14 @@ const User = require("../models/user");
 
 const addBookToFavourite = async (req, res) => {
   try {
-    const { id, bookid } = req.headers;
+    const { bookId } = req.body;
+    const { id } = req.user;
     const userData = await User.findById(id);
 
-    const isBookFavourite = userData.favourites.includes(bookid);
+    const isBookFavourite = userData.favourites.includes(bookId);
     if (isBookFavourite)
       return res.status(200).json({ msg: "Book is already in Favourites." });
-    await User.findByIdAndUpdate(id, { $push: { favourites: bookid } });
+    await User.findByIdAndUpdate(id, { $push: { favourites: bookId } });
     return res.status(200).json({ msg: "Book added to Favourites." });
   } catch (err) {
     console.error(
@@ -21,12 +22,13 @@ const addBookToFavourite = async (req, res) => {
 
 const removeBookFromFavourite = async (req, res) => {
   try {
-    const { bookid, id } = req.headers;
+    const { bookId } = req.body;
+    const { id } = req.user;
     const userData = await User.findById(id);
 
-    const isBookFavourite = userData.favourites.includes(bookid);
+    const isBookFavourite = userData.favourites.includes(bookId);
     if (isBookFavourite)
-      await User.findByIdAndUpdate(id, { $pull: { favourites: bookid } });
+      await User.findByIdAndUpdate(id, { $pull: { favourites: bookId } });
 
     return res.status(200).json({ msg: "Book remove from Favourites." });
   } catch (err) {

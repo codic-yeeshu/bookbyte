@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { Heart, ShoppingCart, Eye } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { clsx } from 'clsx';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { auto as autoQuality } from '@cloudinary/url-gen/qualifiers/quality';
 import { auto as autoFormat } from '@cloudinary/url-gen/qualifiers/format';
 import { scale } from '@cloudinary/url-gen/actions/resize';
+
+import { addBookToCart } from '../api/cart';
+import { addBookToFavourite, removeBookFromFavourite } from '../api/favourite';
+import { useAuth } from '../hooks/useAuth';
 
 const cld = new Cloudinary({ cloud: { cloudName: 'demo' } });
 
@@ -15,7 +20,8 @@ const optimizeImageUrl = (url) => {
 };
 
 const BookCard = ({ book }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const navigate = useNavigate();
+  const { user, isAuthenticated, addToUserCart, addToUserFavourites, removeFromUserFavourites } = useAuth();
 
   // Fallback for missing book data
   const {
@@ -26,16 +32,55 @@ const BookCard = ({ book }) => {
     price = 0,
   } = book || {};
 
-  const toggleFavorite = (e) => {
+  const isFavorite = user?.favourites?.includes(_id) || false;
+
+  const toggleFavorite = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsFavorite(!isFavorite);
+    if (!isAuthenticated) return toast.error("Please login to update favourites.");
+    try {
+      if (isFavorite) {
+        await removeBookFromFavourite(_id);
+        removeFromUserFavourites(_id);
+        toast.success("Removed from favourites!");
+      } else {
+        await addBookToFavourite(_id);
+        addToUserFavourites(_id);
+        toast.success("Added to favourites!");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update favourites.");
+    }
+  };
+
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) return toast.error("Please login to add to cart.");
+    try {
+      await addBookToCart(_id);
+      addToUserCart(_id);
+      toast.success("Added to cart successfully!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to add to cart.");
+    }
+  };
+
+  const handleCardClick = (e) => {
+    // Prevent triggering navigation if a button was clicked
+    if (e.target.closest('button') || e.target.closest('a')) return;
+    navigate(`/book/${_id}`);
   };
 
   const optimizedUrl = optimizeImageUrl(url);
 
   return (
-    <div className="group relative bg-card rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:border-primary/30 flex flex-col h-full">
+    <div 
+      onClick={handleCardClick}
+      className="group relative bg-card rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:border-primary/30 flex flex-col h-full cursor-pointer"
+    >
       {/* Book Cover Container */}
       <div className="relative aspect-3/4 overflow-hidden bg-foreground/5 shrink-0">
         <img
@@ -55,6 +100,7 @@ const BookCard = ({ book }) => {
             <Eye className="w-5 h-5" />
           </Link>
           <button
+            onClick={handleAddToCart}
             className="p-3 rounded-full bg-white text-black hover:bg-primary hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-500 delay-150"
             title="Add to Cart"
           >
@@ -79,11 +125,9 @@ const BookCard = ({ book }) => {
       {/* Content */}
       <div className="p-5 flex flex-col flex-1">
         <div className="mb-2 flex-1">
-          <Link to={`/book/${_id}`}>
-            <h3 className="text-lg font-bold font-serif leading-tight line-clamp-1 hover:text-primary transition-colors">
-              {title}
-            </h3>
-          </Link>
+          <h3 className="text-lg font-bold font-serif leading-tight line-clamp-1 hover:text-primary transition-colors">
+            {title}
+          </h3>
           <p className="text-sm text-foreground/50 mt-1">{author}</p>
         </div>
 

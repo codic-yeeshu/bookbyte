@@ -7,6 +7,17 @@ import {
   Instagram,
   Mail
 } from 'lucide-react';
+import toast from 'react-hot-toast'
+
+const TooltipWrapper = ({ text, children }) => (
+  <div className="relative group inline-flex justify-center overflow-visible">
+    {children}
+    <div className="absolute bottom-full mb-2 w-max px-2.5 py-1 text-[11px] font-bold tracking-wide text-white bg-primary rounded-md shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-100">
+      {text}
+      <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-foreground" />
+    </div>
+  </div>
+);
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -28,15 +39,21 @@ const Footer = () => {
               Built with love for book lovers everywhere.
             </p>
             <div className="flex items-center space-x-4">
-              <a href="#" className="p-2 rounded-full hover:bg-foreground/5 transition-colors text-foreground/60 hover:text-primary">
-                <Github className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2 rounded-full hover:bg-foreground/5 transition-colors text-foreground/60 hover:text-primary">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2 rounded-full hover:bg-foreground/5 transition-colors text-foreground/60 hover:text-primary">
-                <Instagram className="w-5 h-5" />
-              </a>
+              <TooltipWrapper text="View Source">
+                <a href="https://github.com/codic-yeeshu/bookbyte" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-foreground/5 transition-colors text-foreground/60 hover:text-primary block">
+                  <Github className="w-5 h-5" />
+                </a>
+              </TooltipWrapper>
+              <TooltipWrapper text="Work in progress 🚧">
+                <a href="#" className="p-2 rounded-full hover:bg-foreground/5 transition-colors text-foreground/60 hover:text-primary block">
+                  <Twitter className="w-5 h-5" />
+                </a>
+              </TooltipWrapper>
+              <TooltipWrapper text="Work in progress 🚧">
+                <a href="#" className="p-2 rounded-full hover:bg-foreground/5 transition-colors text-foreground/60 hover:text-primary block">
+                  <Instagram className="w-5 h-5" />
+                </a>
+              </TooltipWrapper>
             </div>
           </div>
 
@@ -55,10 +72,26 @@ const Footer = () => {
           <div className="md:col-span-1">
             <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-6">Support</h3>
             <ul className="space-y-4 text-sm">
-              <li><Link to="/help" className="text-foreground/60 hover:text-primary transition-colors">Help Center</Link></li>
-              <li><Link to="/terms" className="text-foreground/60 hover:text-primary transition-colors">Terms of Service</Link></li>
-              <li><Link to="/privacy" className="text-foreground/60 hover:text-primary transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/contact" className="text-foreground/60 hover:text-primary transition-colors">Contact Us</Link></li>
+              <li>
+                <TooltipWrapper text="Work in progress 🚧">
+                  <Link to="#" className="text-foreground/60 hover:text-primary transition-colors">Help Center</Link>
+                </TooltipWrapper>
+              </li>
+              <li>
+                <TooltipWrapper text="Work in progress 🚧">
+                  <Link to="#" className="text-foreground/60 hover:text-primary transition-colors">Terms of Service</Link>
+                </TooltipWrapper>
+              </li>
+              <li>
+                <TooltipWrapper text="Work in progress 🚧">
+                  <Link to="#" className="text-foreground/60 hover:text-primary transition-colors">Privacy Policy</Link>
+                </TooltipWrapper>
+              </li>
+              <li>
+                <TooltipWrapper text="Work in progress 🚧">
+                  <Link to="#" className="text-foreground/60 hover:text-primary transition-colors">Contact Us</Link>
+                </TooltipWrapper>
+              </li>
             </ul>
           </div>
 
@@ -66,7 +99,7 @@ const Footer = () => {
           <div className="md:col-span-1">
             <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-6">Stay Updated</h3>
             <p className="text-sm text-foreground/60 mb-4">Subscribe to our newsletter for updates and new releases.</p>
-            <form className="flex flex-col space-y-3">
+            <form onSubmit={(e) => {e.preventDefault(); toast.success("Subscribed successfully..")}} className="flex flex-col space-y-3">
               <input
                 type="email"
                 placeholder="Enter your email"
@@ -84,8 +117,12 @@ const Footer = () => {
             &copy; {currentYear} BookByte. All rights reserved.
           </p>
           <div className="flex items-center space-x-6">
-            <Link to="/sitemap" className="text-xs text-foreground/40 hover:text-primary transition-colors">Sitemap</Link>
-            <Link to="/cookies" className="text-xs text-foreground/40 hover:text-primary transition-colors">Cookies Settings</Link>
+            <TooltipWrapper text="Work in progress 🚧">
+              <Link to="#" className="text-xs text-foreground/40 hover:text-primary transition-colors">Sitemap</Link>
+            </TooltipWrapper>
+            <TooltipWrapper text="Work in progress 🚧">
+              <Link to="#" className="text-xs text-foreground/40 hover:text-primary transition-colors">Cookies Settings</Link>
+            </TooltipWrapper>
           </div>
         </div>
       </div>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getBookById } from '../api/books';
-import { addBookToCart, addBookToFavourite } from '../api/cart';
-import Alert from '../components/Alert';
+import { addBookToCart, addBookToFavourite, removeBookFromFavourite } from '../api/cart';
+import toast from 'react-hot-toast';
+import { clsx } from 'clsx';
 import {
   ShoppingCart,
   Heart,
@@ -18,12 +19,13 @@ import { useAuth } from '../hooks/useAuth';
 
 const BookDetails = () => {
   const { id } = useParams();
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated, addToUserCart, addToUserFavourites, removeFromUserFavourites } = useAuth();
 
   const [book, setBook] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
+
+  const isFavorite = user?.favourites?.includes(id) || false;
+  const inCart = user?.cart?.includes(id) || false;
 
   useEffect(() => {
   window.scrollTo(0, 0);
@@ -33,11 +35,10 @@ const BookDetails = () => {
     const fetchBook = async () => {
       try {
         const response = await getBookById(id);
-        // Assuming data structure matches getRecentBooks
         setBook(response.data || response);
       } catch (err) {
         console.error("Error fetching book details:", err);
-        setError("Could not load book details. Please try again.");
+        toast.error("Could not load book details.");
       } finally {
         setIsLoading(false);
       }
@@ -46,26 +47,31 @@ const BookDetails = () => {
   }, [id]);
 
   const handleAddToCart = async () => {
-    if (!isAuthenticated) return setError("Please login to add items to cart.");
+    if (!isAuthenticated) return toast.error("Please login to add items to cart.");
+    if (inCart) return;
     try {
-      setError('');
-      setSuccessMsg('');
       await addBookToCart(id);
-      setSuccessMsg("Added to cart successfully!");
+      addToUserCart(id);
+      toast.success("Added to cart successfully!");
     } catch (err) {
-      setError("Failed to add to cart.");
+      toast.error("Failed to add to cart.");
     }
   };
 
   const handleAddToFavourite = async () => {
-    if (!isAuthenticated) return setError("Please login to add items to favourites.");
+    if (!isAuthenticated) return toast.error("Please login to update favourites.");
     try {
-      setError('');
-      setSuccessMsg('');
-      await addBookToFavourite(id);
-      setSuccessMsg("Added to favourites!");
+      if (isFavorite) {
+        await removeBookFromFavourite(id);
+        removeFromUserFavourites(id);
+        toast.success("Removed from favourites!");
+      } else {
+        await addBookToFavourite(id);
+        addToUserFavourites(id);
+        toast.success("Added to favourites!");
+      }
     } catch (err) {
-      setError("Failed to add to favourites.");
+      toast.error("Failed to update favourites.");
     }
   };
 
@@ -85,10 +91,10 @@ const BookDetails = () => {
     );
   }
 
-  if (error && !book) {
+  if (!book && !isLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <Alert type="error" message={error} />
+        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500">Book not found</div>
         <Link to="/books" className="inline-flex items-center space-x-2 text-primary mt-6 font-bold">
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Collection</span>
@@ -180,26 +186,35 @@ const BookDetails = () => {
             <div className="flex flex-1 w-full gap-3">
               <button
                 onClick={handleAddToCart}
-                className="flex-1 btn-primary py-4! flex items-center justify-center space-x-2 group"
+                disabled={inCart}
+                className={clsx(
+                  "flex-1 py-4! flex items-center justify-center space-x-2 group transition-all",
+                  inCart ? "bg-green-500 text-white rounded-xl shadow cursor-not-allowed opacity-80" : "btn-primary"
+                )}
               >
-                <ShoppingCart className="w-5 h-5 group-hover:animate-bounce" />
-                <span>Add to Cart</span>
+                {inCart ? (
+                  <>
+                    <CheckCircle2 className="w-5 h-5" />
+                    <span>Added to Cart</span>
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="w-5 h-5 group-hover:animate-bounce" />
+                    <span>Add to Cart</span>
+                  </>
+                )}
               </button>
               <button
                 onClick={handleAddToFavourite}
-                className="p-4 rounded-xl border border-border hover:bg-foreground/5 transition-all text-foreground/40 hover:text-red-500"
+                className={clsx(
+                  "p-4 rounded-xl border transition-all text-foreground/40",
+                  isFavorite ? "border-red-500 bg-red-500 text-white hover:bg-red-600" : "border-border hover:bg-foreground/5 hover:text-red-500"
+                )}
               >
-                <Heart className="w-6 h-6" />
+                <Heart className={clsx("w-6 h-6", isFavorite && "fill-current")} />
               </button>
             </div>
           </div>
-
-          {(error || successMsg) && (
-            <div className="mt-8">
-              {error && <Alert type="error" message={error} />}
-              {successMsg && <Alert type="success" message={successMsg} />}
-            </div>
-          )}
         </div>
       </div>
     </div>

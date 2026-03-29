@@ -47,6 +47,22 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   };
 
+  const addToUserCart = (id) => {
+    if (user) setUser({ ...user, cart: [...(user.cart || []), id] });
+  };
+
+  const removeFromUserCart = (id) => {
+    if (user) setUser({ ...user, cart: (user.cart || []).filter(item => item !== id) });
+  };
+
+  const addToUserFavourites = (id) => {
+    if (user) setUser({ ...user, favourites: [...(user.favourites || []), id] });
+  };
+
+  const removeFromUserFavourites = (id) => {
+    if (user) setUser({ ...user, favourites: (user.favourites || []).filter(item => item !== id) });
+  };
+
   const value = {
     user,
     token,
@@ -55,7 +71,11 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     register,
-    setUser
+    setUser,
+    addToUserCart,
+    removeFromUserCart,
+    addToUserFavourites,
+    removeFromUserFavourites
   };
 
   return (

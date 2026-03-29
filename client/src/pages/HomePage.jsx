@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getRecentBooks, getAllBooks } from '../api/books';
+import { getRecentBooks, getAllBooks, getRandomBooks } from '../api/books';
 import BookCard from '../components/BookCard';
 import Alert from '../components/Alert';
 import { ArrowRight, Sparkles, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -107,15 +107,17 @@ const HeroCarousel = () => {
 const HomePage = () => {
   const [recentBooks, setRecentBooks] = useState([]);
   const [otherBooks, setOtherBooks] = useState([]);
+  const [randomBooks, setRandomBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
-        const [recentRes, allRes] = await Promise.all([
+        const [recentRes, allRes, randomRes] = await Promise.all([
           getRecentBooks(),
-          getAllBooks()
+          getAllBooks(),
+          getRandomBooks()
         ]);
         
         // Recent books
@@ -126,6 +128,9 @@ const HomePage = () => {
         // Sort randomly to get "other" books
         const shuffled = [...allBooksArray].sort(() => 0.5 - Math.random());
         setOtherBooks(shuffled.slice(0, 8));
+        
+        // Random books for personalized section
+        setRandomBooks(randomRes.data || randomRes || []);
         
       } catch (err) {
         console.error("Error fetching home books:", err);
@@ -229,12 +234,28 @@ const HomePage = () => {
           </div>
           <div className="flex-1 relative z-10 grid grid-cols-2 gap-4">
             <div className="space-y-4">
-              <div className="aspect-3/4 rounded-xl bg-foreground/5 animate-float" />
-              <div className="aspect-3/4 rounded-xl bg-foreground/5" />
+              {randomBooks[0] ? (
+                <Link to={`/book/${randomBooks[0]._id}`} className="block aspect-3/4 rounded-xl overflow-hidden hover:scale-105 transition-transform animate-float shadow-2xl">
+                  <img src={randomBooks[0].url} alt={randomBooks[0].title} className="w-full h-full object-cover" />
+                </Link>
+              ) : <div className="aspect-3/4 rounded-xl bg-foreground/5 animate-float" />}
+              {randomBooks[1] ? (
+                <Link to={`/book/${randomBooks[1]._id}`} className="block aspect-3/4 rounded-xl overflow-hidden hover:scale-105 transition-transform shadow-xl">
+                  <img src={randomBooks[1].url} alt={randomBooks[1].title} className="w-full h-full object-cover" />
+                </Link>
+              ) : <div className="aspect-3/4 rounded-xl bg-foreground/5" />}
             </div>
             <div className="space-y-4 mt-8">
-              <div className="aspect-3/4 rounded-xl bg-foreground/5" />
-              <div className="aspect-3/4 rounded-xl bg-foreground/5 animate-float delay-1000" />
+              {randomBooks[2] ? (
+                <Link to={`/book/${randomBooks[2]._id}`} className="block aspect-3/4 rounded-xl overflow-hidden hover:scale-105 transition-transform shadow-xl">
+                  <img src={randomBooks[2].url} alt={randomBooks[2].title} className="w-full h-full object-cover" />
+                </Link>
+              ) : <div className="aspect-3/4 rounded-xl bg-foreground/5" />}
+              {randomBooks[3] ? (
+                <Link to={`/book/${randomBooks[3]._id}`} className="block aspect-3/4 rounded-xl overflow-hidden hover:scale-105 transition-transform animate-float delay-1000 shadow-2xl">
+                  <img src={randomBooks[3].url} alt={randomBooks[3].title} className="w-full h-full object-cover" />
+                </Link>
+              ) : <div className="aspect-3/4 rounded-xl bg-foreground/5 animate-float delay-1000" />}
             </div>
           </div>
         </div>

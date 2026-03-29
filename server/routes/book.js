@@ -5,6 +5,7 @@ const {
   deleteBook,
   getAllBooks,
   getRecentBooks,
+  getRandomBooks,
   getBookById,
 } = require("../controllers/book");
 const { authenticateToken } = require("../middlewares/userAuth");
@@ -23,6 +24,9 @@ bookRouter.get("/get-all-books", getAllBooks);
 
 // get recently added books limit to 4
 bookRouter.get("/get-recent-books", getRecentBooks);
+
+// get 4 random books
+bookRouter.get("/get-random-books", getRandomBooks);
 
 // get book by id
 bookRouter.get("/get-book-by-id/:bookid", getBookById);

@@ -96,6 +96,15 @@ const getRecentBooks = async (req, res) => {
   }
 };
 
+const getRandomBooks = async (req, res) => {
+  try {
+    const books = await Book.aggregate([{ $sample: { size: 4 } }]);
+    res.json({ status: "Success", data: books });
+  } catch (error) {
+    res.status(500).json({ message: "An error occurred fetching random books" });
+  }
+};
+
 const getBookById = async (req, res) => {
   try {
     const { bookid } = req.params;
@@ -114,5 +123,6 @@ module.exports = {
   deleteBook,
   getAllBooks,
   getRecentBooks,
+  getRandomBooks,
   getBookById,
 };

@@ -17,6 +17,7 @@ import DiscoverPage from './pages/DiscoverPage';
 import FavouritesPage from './pages/FavouritesPage';
 import AboutPage from './pages/AboutPage';
 import ProfilePage from './pages/ProfilePage';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const [serverStatus, setServerStatus] = useState('checking'); // 'checking', 'waking', 'awake'
@@ -101,6 +102,7 @@ function App() {
           </Routes>
         </MainLayout>
       </Router>
+      <Toaster position="bottom-right" toastOptions={{ duration: 3000 }} />
     </AuthProvider>
   );
 }

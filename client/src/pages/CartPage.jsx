@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUserCart, removeBookFromCart } from '../api/cart';
+import toast from 'react-hot-toast';
 import Alert from '../components/Alert';
 import {
   ShoppingCart,
@@ -63,6 +64,11 @@ const CartPage = () => {
     }
   };
 
+  const handleCardClick = (e, bookId) => {
+    if (e.target.closest('button') || e.target.closest('a')) return;
+    navigate(`/book/${bookId}`);
+  };
+
   if (isLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center animate-pulse">
@@ -115,7 +121,8 @@ const CartPage = () => {
             {cartItems.map((item) => (
               <div
                 key={item._id}
-                className="group flex flex-items items-center p-4 sm:p-6 bg-card border border-border rounded-3xl transition-all hover:shadow-xl hover:border-primary/20"
+                onClick={(e) => handleCardClick(e, item._id)}
+                className="group flex flex-items items-center p-4 sm:p-6 bg-card border border-border rounded-3xl transition-all hover:shadow-xl hover:border-primary/20 cursor-pointer"
               >
                 <div className="w-20 h-24 sm:w-24 sm:h-32 rounded-xl overflow-hidden bg-foreground/5 shrink-0">
                   <img
@@ -128,7 +135,7 @@ const CartPage = () => {
                 <div className="ml-6 flex-1">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
                     <div>
-                      <h3 className="text-lg font-bold font-serif line-clamp-1">{item.title}</h3>
+                      <h3 className="text-lg font-bold font-serif line-clamp-1 group-hover:text-primary transition-colors">{item.title}</h3>
                       <p className="text-sm text-foreground/50">{item.author}</p>
                     </div>
                     <span className="text-xl font-black text-primary">₹{item.price}</span>
@@ -136,9 +143,9 @@ const CartPage = () => {
 
                   <div className="flex items-center justify-between mt-4">
                     <div className="flex items-center bg-foreground/5 rounded-lg">
-                      <button className="p-2 hover:text-primary transition-colors"><Minus className="w-4 h-4" /></button>
+                      <button onClick={() => toast('Quantity updates coming soon!', { icon: '🚧' })} className="p-2 hover:text-primary transition-colors"><Minus className="w-4 h-4" /></button>
                       <span className="px-4 font-bold text-sm">1</span>
-                      <button className="p-2 hover:text-primary transition-colors"><Plus className="w-4 h-4" /></button>
+                      <button onClick={() => toast('Quantity updates coming soon!', { icon: '🚧' })} className="p-2 hover:text-primary transition-colors"><Plus className="w-4 h-4" /></button>
                     </div>
                     <button
                       onClick={() => handleRemove(item._id)}
@@ -180,7 +187,10 @@ const CartPage = () => {
                 </div>
               </div>
 
-              <button className="w-full btn-primary py-4! flex items-center justify-center space-x-2 group relative overflow-hidden">
+              <button 
+                onClick={() => toast('Work in progress', { icon: '🚧' })}
+                className="w-full btn-primary py-4! flex items-center justify-center space-x-2 group relative overflow-hidden"
+              >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                 <span className="relative font-black uppercase tracking-wider">Proceed to Checkout</span>
                 <ChevronRight className="w-5 h-5 relative transition-transform group-hover:translate-x-1" />

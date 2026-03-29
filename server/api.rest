@@ -168,31 +168,26 @@ Authorization: Bearer {{userToken}}
 PUT {{cartUrl}}/add-book-to-cart
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
-id: {{userId}}
-bookID: {{bookId}}
 # Authorization: Bearer {{adminToken}}
 
 {
-
+    "bookId": "{{bookId}}"
 }
 
 ###
 PUT {{cartUrl}}/remove-book-from-cart
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
-id: {{userId}}
-bookID: {{bookId}}
 # Authorization: Bearer {{adminToken}}
 
 {
-
+    "bookId": "{{bookId}}"
 }
 
 ###
 GET {{cartUrl}}/get-user-cart
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
-id: {{userId}}
 # Authorization: Bearer {{adminToken}}
 
 {
@@ -210,31 +205,26 @@ id: {{userId}}
 PUT {{favouriteUrl}}/add-book-to-favourite
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
-id: {{userId}}
-bookID: {{bookId}}
 # Authorization: Bearer {{adminToken}}
 
 {
-
+    "bookId": "{{bookId}}"
 }
 
 ###
 PUT {{favouriteUrl}}/remove-book-from-favourite
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
-id: {{userId}}
-bookID: {{bookId}}
 # Authorization: Bearer {{adminToken}}
 
 {
-
+    "bookId": "{{bookId}}"
 }
 
 ###
 GET {{favouriteUrl}}/get-favourite-books
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
-id: {{userId}}
 # Authorization: Bearer {{adminToken}}
 
 {

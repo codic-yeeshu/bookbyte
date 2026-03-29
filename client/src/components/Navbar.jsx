@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { clsx } from 'clsx';
 import {
@@ -24,6 +24,8 @@ const Navbar = () => {
 
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isActive = (path) => location.pathname === path;
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -49,10 +51,10 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden md:flex items-center space-x-6 text-sm font-medium">
-            <Link to="/" className="text-foreground/80 hover:text-primary transition-colors">Home</Link>
-            <Link to="/discover" className="text-foreground/80 hover:text-primary transition-colors">Discover</Link>
-            <Link to="/favourites" className="text-foreground/80 hover:text-primary transition-colors">Favourites</Link>
-            <Link to="/about" className="text-foreground/80 hover:text-primary transition-colors">About</Link>
+            <Link to="/" className={clsx("transition-colors", isActive('/') ? "text-primary font-bold" : "text-foreground/80 hover:text-primary")}>Home</Link>
+            <Link to="/discover" className={clsx("transition-colors", isActive('/discover') ? "text-primary font-bold" : "text-foreground/80 hover:text-primary")}>Discover</Link>
+            <Link to="/favourites" className={clsx("transition-colors", isActive('/favourites') ? "text-primary font-bold" : "text-foreground/80 hover:text-primary")}>Favourites</Link>
+            <Link to="/about" className={clsx("transition-colors", isActive('/about') ? "text-primary font-bold" : "text-foreground/80 hover:text-primary")}>About</Link>
           </div>
         </div>
 
@@ -83,7 +85,7 @@ const Navbar = () => {
               <>
                 <Link to="/cart" className="relative p-2 rounded-full hover:bg-foreground/5 transition-colors">
                   <ShoppingCart className="w-5 h-5" />
-                  <span className="absolute top-0 right-0 w-4 h-4 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
+                  <span className="absolute top-0 right-0 w-4 h-4 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center">{user?.cart?.length || 0}</span>
                 </Link>
                 <div className="relative">
                   <button
