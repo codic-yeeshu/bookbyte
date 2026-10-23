@@ -17,6 +17,7 @@ import DiscoverPage from './pages/DiscoverPage';
 import FavouritesPage from './pages/FavouritesPage';
 import AboutPage from './pages/AboutPage';
 import ProfilePage from './pages/ProfilePage';
+import FinderPage from './pages/FinderPage';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
@@ -84,6 +85,7 @@ function App() {
             <Route path="/discover" element={<DiscoverPage />} />
             <Route path="/books" element={<DiscoverPage />} /> {/* Alias */}
             <Route path="/book/:id" element={<BookDetails />} />
+            <Route path="/finder" element={<FinderPage />} />
             <Route path="/about" element={<AboutPage />} />
             
             <Route path="/login" element={<Login />} />
