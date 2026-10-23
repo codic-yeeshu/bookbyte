@@ -1,265 +1,282 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getRecentBooks, getAllBooks, getRandomBooks } from '../api/books';
-import BookCard from '../components/BookCard';
-import Alert from '../components/Alert';
-import { ArrowRight, Sparkles, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { getAllBooks } from '../api/books';
+import { getGenres } from '../api/genres';
+import { getLandingCuration } from '../api/curation';
+import { withMockFields } from '../mocks/bookExtras';
+import { useAuth } from '../hooks/useAuth';
+import { useBag } from '../hooks/useBag';
+import BookCover from '../components/BookCover';
 
-const HeroCarousel = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+// Mockups 1b (desktop) and 2a (mobile).
 
-  const slides = [
-    {
-      title: "Discover Your Next Favorite Adventure",
-      subtitle: "Explore a curated collection of thousands of books, from timeless classics to modern masterpieces.",
-      image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1000&auto=format&fit=crop"
-    },
-    {
-      title: "Unlock New Worlds With Every Page",
-      subtitle: "Immerse yourself in stories that will captivate your mind and touch your soul.",
-      image: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1000&auto=format&fit=crop"
-    },
-    {
-      title: "Knowledge is Power, Read More",
-      subtitle: "Gain insights, learn new skills, and expand your horizons with our non-fiction collection.",
-      image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1000&auto=format&fit=crop"
-    }
-  ];
+const PERKS = [
+  { n: 'i.', t: 'Two-day delivery', d: 'across 400+ cities' },
+  { n: 'ii.', t: 'Hand-picked', d: 'by our reading staff' },
+  { n: 'iii.', t: '14-day returns', d: 'no questions asked' },
+];
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+const MEMBER_PERKS = [
+  { n: 'i.', t: 'Your shelf', d: 'Save favourites and pick up where you left off, on any device.' },
+  { n: 'ii.', t: 'Order tracking', d: 'Every parcel, from our packing table to your door.' },
+  { n: 'iii.', t: 'First look', d: 'New arrivals a day before everyone else.' },
+];
 
-  useEffect(() => {
-    const timer = setInterval(nextSlide, 5000);
-    return () => clearInterval(timer);
-  }, []);
+const SHELF_SIZE = 6;
+
+const Hero = ({ curation }) => {
+  const list = curation?.list;
+  const pick = curation?.editorsPick;
 
   return (
-    <div className="relative overflow-hidden bg-background py-10 sm:py-20 rounded-3xl mt-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 group">
-      {/* Decorative blobs */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-125 h-125 bg-primary/10 rounded-full blur-3xl opacity-50 animate-pulse pointer-events-none" />
-      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-100 h-100 bg-indigo-500/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
-
-      <div className="relative h-100 sm:h-125 rounded-3xl overflow-hidden shadow-2xl border border-border/50">
-        {slides.map((slide, idx) => (
-          <div
-            key={idx}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              idx === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
-            }`}
-          >
-            <div className="absolute inset-0 bg-black/50 z-10" />
-            <img 
-              src={slide.image} 
-              alt={slide.title} 
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-6 sm:p-12">
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/20 text-white backdrop-blur-sm text-xs font-bold uppercase tracking-wider mb-6">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Featured Collection</span>
-              </div>
-              <h2 className="text-4xl sm:text-6xl font-black font-serif text-white tracking-tight leading-[1.1] mb-6 max-w-4xl drop-shadow-lg">
-                {slide.title}
-              </h2>
-              <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mb-8 drop-shadow">
-                {slide.subtitle}
-              </p>
-              <Link to="/discover" className="btn-primary flex items-center space-x-2 group/btn justify-center shadow-xl">
-                <span>Explore Collection</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-              </Link>
-            </div>
-          </div>
-        ))}
-        
-        {/* Carousel Controls */}
-        <button 
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 p-2 rounded-full bg-black/20 text-white hover:bg-primary/80 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-        <button 
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 p-2 rounded-full bg-black/20 text-white hover:bg-primary/80 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
-        
-        {/* Indicators */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex space-x-2">
-          {slides.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentSlide(idx)}
-              className={`w-2.5 h-2.5 rounded-full transition-all ${
-                idx === currentSlide ? 'bg-primary w-8' : 'bg-white/50 hover:bg-white'
-              }`}
-            />
-          ))}
+    <section className="page grid items-center gap-7 pt-9 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:pt-20 lg:pb-[72px]">
+      <div className="flex flex-col gap-[18px] lg:gap-[26px]">
+        <span className="eyebrow tracking-[.16em]">{list ? `${list.title} · No. ${list.number}` : ' '}</span>
+        <h1 className="m-0 text-[56px] leading-[.92] font-normal tracking-[-0.03em] lg:text-[clamp(64px,8.1vw,104px)]">
+          Books worth <em className="text-accent">staying up</em> for.
+        </h1>
+        <p className="m-0 max-w-[470px] text-[15px] leading-[1.6] text-muted lg:text-justify lg:text-base lg:leading-[1.65] lg:hyphens-auto">
+          <span className="lg:hidden">A small, carefully kept bookshop on the internet — chosen by people who actually read, delivered in two days.</span>
+          <span className="hidden lg:inline">A small, carefully kept bookshop on the internet. Thousands of titles, chosen and annotated by people who actually read them — delivered to your door in two days.</span>
+        </p>
+        <div className="flex items-center gap-3">
+          <Link to="/discover" className="btn btn-primary btn-block px-[22px] py-3.5 text-base lg:w-auto lg:py-[13px]">
+            Browse the shelves <ArrowRight size={16} strokeWidth={1.6} className="hidden lg:block" />
+          </Link>
+          <Link to="/new" className="btn btn-ghost hidden px-2.5 py-[13px] text-base lg:inline-flex">This week's picks</Link>
         </div>
       </div>
-    </div>
+
+      {pick && (
+        <div className="relative h-[290px] lg:h-[500px]">
+          <div className="absolute inset-[10px_30px_0] rounded-[50%_50%_0_0/30%_30%_0_0] border border-divider lg:inset-[30px_40px_0_60px]" />
+          <div className="absolute top-[70px] left-1 w-[118px] -rotate-8 lg:top-[90px] lg:left-10 lg:w-[190px]">
+            <BookCover book={pick.flanking[0]} tone={2} shadow="lg" />
+          </div>
+          <div className="absolute top-20 right-1 w-[118px] rotate-7 lg:top-[110px] lg:right-[30px] lg:w-[190px]">
+            <BookCover book={pick.flanking[1]} tone={3} shadow="lg" />
+          </div>
+          <div className="absolute top-5 left-1/2 -ml-[75px] w-[150px] lg:top-10 lg:-ml-[120px] lg:w-[240px]">
+            <BookCover book={pick.featured} tone={1} titleSize={15} shadow="lg" />
+          </div>
+          <p className="absolute inset-x-0 bottom-0 m-0 text-center text-xs text-muted italic lg:text-[13px]">
+            Editor's pick — <span className="text-ink">{pick.featured.title}<span className="hidden lg:inline">, {pick.featured.author}</span></span>
+          </p>
+        </div>
+      )}
+    </section>
   );
 };
 
+const Perks = () => (
+  <>
+    <div className="mx-5 mt-7 border-t border-divider lg:hidden">
+      {PERKS.map(({ n, t, d }) => (
+        <div key={n} className="flex items-baseline gap-3.5 border-b border-divider py-3.5 text-sm">
+          <span className="w-7 font-heading text-[19px] text-accent italic">{n}</span>
+          <span><strong className="font-semibold">{t}</strong> <span className="text-muted">{d}</span></span>
+        </div>
+      ))}
+    </div>
+    <div className="hidden border-y border-divider lg:block">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-3">
+        {PERKS.map(({ n, t, d }) => (
+          <div key={n} className="flex items-baseline gap-3.5 border-r border-divider px-14 py-[22px] last:border-r-0">
+            <span className="font-heading text-[22px] text-accent italic">{n}</span>
+            <span className="text-sm"><strong className="font-semibold">{t}</strong> <span className="text-muted">{d}</span></span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </>
+);
+
+const Shelf = ({ books, loading, error }) => (
+  <section className="flex flex-col gap-[18px] pt-11 pb-2 lg:page lg:gap-8 lg:py-[72px]">
+    <div className="flex items-end justify-between px-5 lg:px-0">
+      <div>
+        <span className="eyebrow hidden tracking-[.16em] lg:inline">Fresh off the cart</span>
+        <h2 className="m-0 text-[34px] leading-none font-normal lg:mt-1.5 lg:text-[52px]">This week's shelf</h2>
+      </div>
+      <Link to="/new" className="border-b border-current pb-0.5 text-[13px] no-underline lg:text-sm">
+        <span className="lg:hidden">All</span><span className="hidden lg:inline">View all new arrivals</span>
+      </Link>
+    </div>
+
+    {error ? (
+      <p className="m-0 px-5 text-muted italic lg:px-0">Couldn't load the shelf right now.</p>
+    ) : (
+      <div className="flex gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] lg:grid lg:grid-cols-6 lg:gap-7 lg:overflow-visible lg:px-0 lg:pb-0">
+        {loading
+          ? Array.from({ length: SHELF_SIZE }, (_, i) => (
+              <div key={i} className="aspect-[2/3] w-[132px] flex-none animate-pulse rounded-[2px_4px_4px_2px] bg-surface lg:w-auto" />
+            ))
+          : books.map((book) => (
+              <Link key={book._id} to={`/book/${book._id}`} className="flex w-[132px] flex-none flex-col gap-2 text-ink no-underline lg:w-auto lg:gap-3">
+                <BookCover book={book} />
+                <div className="flex flex-col gap-0.5">
+                  <span className="line-clamp-2 font-heading text-[17px] leading-[1.15] font-semibold lg:text-[19px]">{book.title}</span>
+                  <span className="text-xs text-muted italic lg:text-[13px]">{book.author}</span>
+                  <div className="mt-1 flex items-baseline justify-between lg:mt-1.5">
+                    <span className="font-heading text-lg tabular-nums lg:text-xl">₹{book.price}</span>
+                    <span className="hidden text-xs text-accent lg:inline">★ {book.ratingAverage.toFixed(1)}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+      </div>
+    )}
+  </section>
+);
+
+const Genres = ({ genres }) => (
+  <section className="order-5 flex flex-col gap-2.5 px-5 pt-10 lg:page lg:order-4 lg:grid lg:grid-cols-[320px_1fr] lg:gap-[72px] lg:pt-0 lg:pb-20">
+    <div className="flex flex-col gap-3.5 lg:border-t lg:border-ink lg:pt-7">
+      <span className="eyebrow hidden tracking-[.16em] lg:inline">Contents</span>
+      <h2 className="m-0 mb-1.5 text-[34px] leading-none font-normal lg:mb-0 lg:text-[52px]">Browse by <em>genre</em></h2>
+      <p className="m-0 hidden text-justify text-sm text-muted lg:block">Our shelves, laid out like the front of a good book. Pick a chapter and wander.</p>
+    </div>
+    <div className="grid border-t border-ink lg:grid-cols-2 lg:gap-x-12">
+      {genres.map((genre, i) => (
+        <Link
+          key={genre.slug}
+          to={`/discover?genre=${genre.slug}`}
+          className="grid grid-cols-[34px_1fr_auto] items-baseline border-b border-divider py-3.5 text-ink no-underline hover:text-accent lg:grid-cols-[44px_1fr_auto] lg:py-[18px]"
+        >
+          <span className="font-heading text-sm text-accent tabular-nums lg:text-base">{String(i + 1).padStart(2, '0')}</span>
+          <span className="font-heading text-[22px] font-medium lg:text-[26px]">{genre.name}</span>
+          <span className="text-xs text-muted tabular-nums">
+            {genre.count.toLocaleString('en-IN')}<span className="hidden lg:inline"> titles</span>
+          </span>
+        </Link>
+      ))}
+    </div>
+  </section>
+);
+
+const StaffPick = ({ pick, books }) => {
+  const navigate = useNavigate();
+  const { addToBag } = useBag();
+  const { book, staff, quote, shortQuote } = pick;
+
+  // TODO(#12): curated books will come back with an _id; until then try to find the title on the shelves.
+  const handleAdd = () => {
+    const match = books.find((b) => b.title.toLowerCase() === book.title.toLowerCase());
+    if (match) addToBag(match._id);
+    else navigate(`/discover?q=${encodeURIComponent(book.title)}`);
+  };
+
+  return (
+    <section className="order-6 mx-5 mt-10 flex flex-col gap-4 rounded-md border border-accent px-[22px] py-7 lg:order-5 lg:mx-auto lg:mt-0 lg:mb-20 lg:grid lg:w-[calc(100%-112px)] lg:max-w-[1168px] lg:grid-cols-[220px_1fr] lg:items-center lg:gap-16 lg:p-14">
+      <BookCover book={book} tone={5} shadow="lg" className="hidden lg:block" />
+      <div className="flex flex-col gap-4 lg:gap-[22px]">
+        <span className="eyebrow tracking-[.16em]">
+          Staff pick · {staff.name}<span className="hidden lg:inline">, {staff.desk}</span>
+        </span>
+        <p className="m-0 font-heading text-[27px] leading-[1.15] italic lg:text-[40px] lg:leading-[1.12] lg:tracking-[-0.01em] lg:text-pretty">
+          <span className="lg:hidden">“{shortQuote}”</span>
+          <span className="hidden lg:inline">“{quote}”</span>
+        </p>
+        <span className="text-[13px] text-muted lg:hidden">{book.title} — {book.author}</span>
+        <div className="flex items-center gap-3">
+          <Link to="/journal" className="btn btn-primary hidden lg:inline-flex">Read {staff.name}'s notes</Link>
+          <button type="button" onClick={handleAdd} className="btn btn-secondary btn-block lg:w-auto">
+            Add to bag · ₹{book.price}
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Finder = () => (
+  <section className="order-4 mx-5 mt-9 flex flex-col gap-3.5 border-t border-b border-t-ink border-b-divider py-7 lg:order-6 lg:mx-auto lg:mt-0 lg:w-[calc(100%-112px)] lg:max-w-[1168px] lg:mb-[88px] lg:grid lg:grid-cols-[1fr_1px_1fr] lg:items-center lg:gap-14 lg:py-14">
+    <div className="flex flex-col gap-3.5 lg:gap-4">
+      <span className="eyebrow tracking-[.16em]">Book finder</span>
+      <h2 className="m-0 text-[40px] leading-[.98] font-normal lg:text-[64px] lg:tracking-[-0.02em]">
+        Not sure what to pick? <em className="text-accent">Let us help.</em>
+      </h2>
+    </div>
+    <div className="hidden self-stretch bg-divider lg:block" />
+    <div className="flex flex-col gap-3.5 lg:gap-5">
+      <p className="m-0 text-sm leading-[1.6] text-muted lg:text-justify lg:text-base lg:leading-[1.65] lg:hyphens-auto">
+        <span className="lg:hidden">Four quick questions about mood, authors and length — we'll pull the books that fit.</span>
+        <span className="hidden lg:inline">Tell us what you're in the mood for, the authors you already love and how long you'd like to read. Four quick questions — we'll pull the books that fit from our shelves.</span>
+      </p>
+      <div className="flex items-center gap-4">
+        <Link to="/finder" className="btn btn-primary btn-block px-[22px] py-3.5 text-base lg:w-auto lg:py-[13px]">
+          Find my next book <ArrowRight size={16} strokeWidth={1.6} className="hidden lg:block" />
+        </Link>
+        <span className="hidden text-[13px] text-muted italic lg:inline">Takes about a minute</span>
+      </div>
+    </div>
+  </section>
+);
+
+const Membership = () => (
+  <section className="order-7 mx-5 mt-10 flex flex-col gap-3.5 border-t border-b border-t-ink border-b-divider py-7 lg:mx-auto lg:mt-0 lg:mb-[88px] lg:grid lg:w-[calc(100%-112px)] lg:max-w-[1168px] lg:grid-cols-2 lg:gap-0 lg:rounded-md lg:border lg:border-divider lg:py-0">
+    <div className="flex flex-col gap-3.5 lg:gap-[18px] lg:border-r lg:border-divider lg:p-12">
+      <span className="eyebrow tracking-[.16em]">Membership · free</span>
+      <h2 className="m-0 text-[40px] leading-[.98] font-normal lg:text-[56px] lg:leading-none lg:tracking-[-0.02em]">
+        Keep a shelf of your <em className="text-accent">own.</em>
+      </h2>
+      <p className="m-0 hidden text-justify text-[15px] leading-[1.65] text-muted hyphens-auto lg:block">
+        Save books for later, follow every order and hear about new arrivals first. Joining takes thirty seconds and costs nothing.
+      </p>
+      <div className="mt-1.5 hidden items-center gap-3 lg:flex">
+        <Link to="/signup" className="btn btn-primary px-[22px] py-[13px] text-base">Create a free account</Link>
+        <Link to="/login" className="btn btn-ghost text-[15px]">I have one — sign in</Link>
+      </div>
+    </div>
+    <div className="flex flex-col lg:justify-center lg:px-12 lg:py-9">
+      {MEMBER_PERKS.map(({ n, t, d }) => (
+        <div key={n} className="grid grid-cols-[32px_1fr] border-t border-divider py-2.5 text-sm lg:grid-cols-[44px_1fr] lg:border-t-0 lg:border-b lg:py-[18px]">
+          <span className="font-heading text-lg text-accent italic lg:text-[22px]">{n}</span>
+          <span className="lg:flex lg:flex-col lg:gap-0.5">
+            <strong className="font-semibold lg:font-heading lg:text-2xl lg:font-medium">{t}</strong>{' '}
+            <span className="text-muted">{d}</span>
+          </span>
+        </div>
+      ))}
+    </div>
+    <div className="flex flex-col gap-2.5 lg:hidden">
+      <Link to="/signup" className="btn btn-primary btn-block p-3.5 text-base">Create a free account</Link>
+      <Link to="/login" className="btn btn-ghost btn-block min-h-11">I have one — sign in</Link>
+    </div>
+  </section>
+);
+
 const HomePage = () => {
-  const [recentBooks, setRecentBooks] = useState([]);
-  const [otherBooks, setOtherBooks] = useState([]);
-  const [randomBooks, setRandomBooks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { isAuthenticated } = useAuth();
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [genres, setGenres] = useState([]);
+  const [curation, setCuration] = useState(null);
 
   useEffect(() => {
-    const fetchHomeData = async () => {
-      try {
-        const [recentRes, allRes, randomRes] = await Promise.all([
-          getRecentBooks(),
-          getAllBooks(),
-          getRandomBooks()
-        ]);
-        
-        // Recent books
-        setRecentBooks(recentRes.data || recentRes || []);
-        
-        // Other books (shuffle and pick 8 that are not in recent, or just pick other subset)
-        const allBooksArray = allRes.data || allRes || [];
-        // Sort randomly to get "other" books
-        const shuffled = [...allBooksArray].sort(() => 0.5 - Math.random());
-        setOtherBooks(shuffled.slice(0, 8));
-        
-        // Random books for personalized section
-        setRandomBooks(randomRes.data || randomRes || []);
-        
-      } catch (err) {
-        console.error("Error fetching home books:", err);
-        setError("Unable to load books. Please try again later.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchHomeData();
+    // TODO(#10): ask for ?sort=new&limit=6 once the book list is paginated.
+    getAllBooks()
+      .then((res) => setBooks((res.data || []).map(withMockFields)))
+      .catch((err) => { console.error(err); setError(true); })
+      .finally(() => setLoading(false));
+    getGenres().then((res) => setGenres(res.data));
+    getLandingCuration().then((res) => setCuration(res.data));
   }, []);
 
   return (
-    <div className="pb-20">
-      <HeroCarousel />
-
-      {/* Recent Additions */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <h2 className="text-3xl font-bold font-serif tracking-tight">Recent Additions</h2>
-            <p className="text-foreground/50 mt-1">Handpicked gems fresh off the press</p>
-          </div>
-          <Link to="/discover" className="text-sm font-bold text-primary hover:underline flex items-center gap-1 group">
-            View All
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-        </div>
-
-        {error && <Alert type="error" message={error} />}
-
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="animate-pulse">
-                <div className="aspect-3/4 bg-foreground/5 rounded-2xl mb-4" />
-                <div className="h-5 bg-foreground/5 rounded w-3/4 mb-2" />
-                <div className="h-4 bg-foreground/5 rounded w-1/2" />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {recentBooks.length > 0 ? (
-              recentBooks.slice(0, 4).map((book) => (
-                <BookCard key={book._id} book={book} />
-              ))
-            ) : (
-              <div className="col-span-full py-20 text-center border-2 border-dashed border-border rounded-3xl">
-                <BookOpen className="w-12 h-12 text-foreground/10 mx-auto mb-4" />
-                <p className="text-foreground/40">No books found in the recent collection.</p>
-              </div>
-            )}
-          </div>
-        )}
-      </section>
-
-      {/* Other Books */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <h2 className="text-3xl font-bold font-serif tracking-tight">Other Books You May Like</h2>
-            <p className="text-foreground/50 mt-1">Curated selections from our vast catalog</p>
-          </div>
-        </div>
-
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={`other-skel-${i}`} className="animate-pulse">
-                <div className="aspect-3/4 bg-foreground/5 rounded-2xl mb-4" />
-                <div className="h-5 bg-foreground/5 rounded w-3/4 mb-2" />
-                <div className="h-4 bg-foreground/5 rounded w-1/2" />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {otherBooks.length > 0 ? (
-              otherBooks.map((book) => (
-                <BookCard key={book._id} book={book} />
-              ))
-            ) : null}
-          </div>
-        )}
-      </section>
-
-      {/* Featured Banner */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-32">
-        <div className="relative rounded-4xl bg-card border border-border p-8 sm:p-16 overflow-hidden flex flex-col md:flex-row items-center gap-12">
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/5 -skew-x-12 translate-x-1/4" />
-          <div className="flex-1 relative z-10">
-            <h2 className="text-4xl font-black font-serif leading-tight mb-6">
-              Personalized Reading <br />
-              <span className="text-primary italic">Just for You</span>
-            </h2>
-            <p className="text-foreground/60 mb-8 max-w-md">
-              Our AI-powered recommendation engine learns your tastes and suggests your next masterpiece.
-            </p>
-            <Link to="/discover" className="btn-primary inline-flex">Get Started Now</Link>
-          </div>
-          <div className="flex-1 relative z-10 grid grid-cols-2 gap-4">
-            <div className="space-y-4">
-              {randomBooks[0] ? (
-                <Link to={`/book/${randomBooks[0]._id}`} className="block aspect-3/4 rounded-xl overflow-hidden hover:scale-105 transition-transform animate-float shadow-2xl">
-                  <img src={randomBooks[0].url} alt={randomBooks[0].title} className="w-full h-full object-cover" />
-                </Link>
-              ) : <div className="aspect-3/4 rounded-xl bg-foreground/5 animate-float" />}
-              {randomBooks[1] ? (
-                <Link to={`/book/${randomBooks[1]._id}`} className="block aspect-3/4 rounded-xl overflow-hidden hover:scale-105 transition-transform shadow-xl">
-                  <img src={randomBooks[1].url} alt={randomBooks[1].title} className="w-full h-full object-cover" />
-                </Link>
-              ) : <div className="aspect-3/4 rounded-xl bg-foreground/5" />}
-            </div>
-            <div className="space-y-4 mt-8">
-              {randomBooks[2] ? (
-                <Link to={`/book/${randomBooks[2]._id}`} className="block aspect-3/4 rounded-xl overflow-hidden hover:scale-105 transition-transform shadow-xl">
-                  <img src={randomBooks[2].url} alt={randomBooks[2].title} className="w-full h-full object-cover" />
-                </Link>
-              ) : <div className="aspect-3/4 rounded-xl bg-foreground/5" />}
-              {randomBooks[3] ? (
-                <Link to={`/book/${randomBooks[3]._id}`} className="block aspect-3/4 rounded-xl overflow-hidden hover:scale-105 transition-transform animate-float delay-1000 shadow-2xl">
-                  <img src={randomBooks[3].url} alt={randomBooks[3].title} className="w-full h-full object-cover" />
-                </Link>
-              ) : <div className="aspect-3/4 rounded-xl bg-foreground/5 animate-float delay-1000" />}
-            </div>
-          </div>
-        </div>
-      </section>
+    <div className="flex flex-col pb-11 lg:pb-0">
+      <p className="order-0 m-0 border-b border-divider px-5 py-2.5 text-center text-xs text-muted italic lg:hidden">
+        Free shipping on orders over ₹499
+      </p>
+      <div className="order-1"><Hero curation={curation} /></div>
+      <div className="order-2"><Perks /></div>
+      <div className="order-3"><Shelf books={books.slice(0, SHELF_SIZE)} loading={loading} error={error} /></div>
+      <Genres genres={genres} />
+      {curation && <StaffPick pick={curation.staffPick} books={books} />}
+      <Finder />
+      {!isAuthenticated && <Membership />}
     </div>
   );
 };
