@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import { CONFIG } from './config';
 import ServerWakeup from './components/ServerWakeup';
@@ -7,6 +7,7 @@ import MainLayout from './layout/MainLayout';
 import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
 import HomePage from './pages/HomePage';
 import BookDetails from './pages/BookDetails';
 import CartPage from './pages/CartPage';
@@ -82,8 +83,13 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <MainLayout>
-          <Routes>
+        <Routes>
+          {/* Auth screens are full-screen (mockups 3a–3e) */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+
+          <Route element={<MainLayout><Outlet /></MainLayout>}>
             <Route path="/" element={<HomePage />} />
             <Route path="/discover" element={<DiscoverPage />} />
             <Route path="/books" element={<DiscoverPage />} /> {/* Alias */}
@@ -93,9 +99,7 @@ function App() {
             <Route path="/journal" element={<JournalPage />} />
             <Route path="/finder" element={<FinderPage />} />
             <Route path="/about" element={<AboutPage />} />
-            
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+
             <Route path="/favourites" element={<FavouritesPage />} />
             <Route path="/favorites" element={<FavouritesPage />} /> {/* Alias */}
             <Route path="/cart" element={<CartPage />} />
@@ -107,8 +111,8 @@ function App() {
 
             {/* Catch-all route */}
             <Route path="*" element={<div className="p-12 text-center text-2xl font-bold font-serif min-h-[50vh] flex items-center justify-center">404 - Not Found</div>} />
-          </Routes>
-        </MainLayout>
+          </Route>
+        </Routes>
       </Router>
       <Toaster
         position="bottom-right"

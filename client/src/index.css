@@ -97,6 +97,7 @@
     line-height: 1.12;
     letter-spacing: -0.015em;
   }
+  a { color: var(--color-accent); text-underline-offset: 3px; }
   button, input, textarea, select { border-color: var(--color-divider); }
   :focus { outline: none; }
   :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
