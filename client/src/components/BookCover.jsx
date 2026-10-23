@@ -29,7 +29,7 @@ const BookCover = ({ book, tone, titleSize = 14, shadow = 'md', className }) => 
     <div
       className={clsx(
         '@container relative aspect-[2/3] overflow-hidden rounded-[2px_4px_4px_2px] text-cover-ink',
-        shadow === 'lg' ? 'shadow-lg' : 'shadow-md',
+        { lg: 'shadow-lg', md: 'shadow-md', none: 'shadow-none' }[shadow],
         src ? 'bg-surface' : TONES[tone ? tone - 1 : toneFor(title)],
         className
       )}

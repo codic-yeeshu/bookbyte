@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
-import { Heart, User } from 'lucide-react';
+import { ArrowLeft, Heart, User } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import MobileMenu from './MobileMenu';
 import { BagButton, Logo, SearchForm, ThemeToggle } from './NavParts';
+import { useMobileChromeState } from '../context/MobileChromeContext';
 
 const PRIMARY_LINKS = [
   { label: 'Discover', to: '/discover' },
@@ -58,6 +59,8 @@ const Navbar = () => {
   const { user, isAuthenticated } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const chrome = useMobileChromeState();
   const bagCount = user?.cart?.length || 0;
 
   useEffect(() => setMenuOpen(false), [location.pathname]);
@@ -108,22 +111,32 @@ const Navbar = () => {
         </nav>
       </header>
 
-      {/* Mobile — BB M Header (brand mode) */}
+      {/* Mobile — BB M Header: "back" mode when the page asks for it (2c), otherwise brand mode */}
       <header className="border-b border-divider bg-bg text-ink lg:hidden">
-        <div className="grid grid-cols-[100px_1fr_100px] items-center px-2 pt-1 pb-2">
-          <button type="button" aria-label="Menu" onClick={() => setMenuOpen(true)} className="btn btn-icon size-11">
-            <MenuIcon />
-          </button>
-          <Logo className="justify-self-center text-[28px]" />
-          <div className="flex items-center justify-end">
-            <ThemeToggle className="size-11" size={19} />
-            {isAuthenticated ? (
-              <BagButton count={bagCount} size={20} className="size-11" />
-            ) : (
-              <Link to="/login" className="flex min-h-11 items-center px-2 text-sm whitespace-nowrap text-accent no-underline">Sign in</Link>
-            )}
+        {chrome.back ? (
+          <div className="grid grid-cols-[52px_1fr_52px] items-center px-2 pt-1 pb-2">
+            <button type="button" aria-label="Back" onClick={() => navigate(-1)} className="btn btn-icon size-11">
+              <ArrowLeft size={22} strokeWidth={1.6} />
+            </button>
+            <span className="justify-self-center truncate font-heading text-[21px] font-semibold">{chrome.title}</span>
+            <BagButton count={bagCount} size={20} className="size-11" />
           </div>
-        </div>
+        ) : (
+          <div className="grid grid-cols-[100px_1fr_100px] items-center px-2 pt-1 pb-2">
+            <button type="button" aria-label="Menu" onClick={() => setMenuOpen(true)} className="btn btn-icon size-11">
+              <MenuIcon />
+            </button>
+            <Logo className="justify-self-center text-[28px]" />
+            <div className="flex items-center justify-end">
+              <ThemeToggle className="size-11" size={19} />
+              {isAuthenticated ? (
+                <BagButton count={bagCount} size={20} className="size-11" />
+              ) : (
+                <Link to="/login" className="flex min-h-11 items-center px-2 text-sm whitespace-nowrap text-accent no-underline">Sign in</Link>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
       {menuOpen && <MobileMenu onClose={() => setMenuOpen(false)} />}
