@@ -20,6 +20,7 @@ import ProfilePage from './pages/ProfilePage';
 import FinderPage from './pages/FinderPage';
 import NewNotablePage from './pages/NewNotablePage';
 import CollectionsPage from './pages/CollectionsPage';
+import JournalPage from './pages/JournalPage';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
@@ -89,6 +90,7 @@ function App() {
             <Route path="/book/:id" element={<BookDetails />} />
             <Route path="/new" element={<NewNotablePage />} />
             <Route path="/collections" element={<CollectionsPage />} />
+            <Route path="/journal" element={<JournalPage />} />
             <Route path="/finder" element={<FinderPage />} />
             <Route path="/about" element={<AboutPage />} />
             
