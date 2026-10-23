@@ -20,41 +20,6 @@ const MenuIcon = () => (
   </svg>
 );
 
-// Profile + sign-out menu; the redesigned Profile page (1g) will take over sign-out.
-const AccountMenu = () => {
-  const [open, setOpen] = useState(false);
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  return (
-    <div className="relative">
-      <button type="button" aria-label="Account" aria-expanded={open} onClick={() => setOpen(!open)} className="btn btn-icon">
-        <User size={18} strokeWidth={1.6} />
-      </button>
-      {open && (
-        <>
-          <button type="button" aria-hidden tabIndex={-1} className="fixed inset-0 z-40 cursor-default" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 z-50 mt-2 w-52 rounded-md border border-divider bg-raised py-2 shadow-lg">
-            <p className="border-b border-divider px-4 pb-2 text-xs text-muted">
-              Signed in as <span className="block truncate text-sm text-ink">{user?.username}</span>
-            </p>
-            <Link to="/profile" onClick={() => setOpen(false)} className="block px-4 py-2 text-sm text-ink no-underline hover:bg-surface">
-              Profile
-            </Link>
-            <button
-              type="button"
-              onClick={() => { logout(); setOpen(false); navigate('/login'); }}
-              className="block w-full px-4 py-2 text-left text-sm text-danger hover:bg-surface"
-            >
-              Sign out
-            </button>
-          </div>
-        </>
-      )}
-    </div>
-  );
-};
-
 const Navbar = () => {
   const { user, isAuthenticated } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -99,7 +64,9 @@ const Navbar = () => {
             )}
             <BagButton count={bagCount} />
             {isAuthenticated ? (
-              <AccountMenu />
+              <Link to="/profile" aria-label="Account" className="btn btn-icon">
+                <User size={18} strokeWidth={1.6} />
+              </Link>
             ) : (
               <>
                 <Link to="/login" className="btn btn-ghost px-2.5! py-2! text-sm">Sign in</Link>
