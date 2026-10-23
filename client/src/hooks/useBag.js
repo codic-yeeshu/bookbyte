@@ -1,10 +1,12 @@
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import { addBookToCart } from '../api/cart';
 import { useAuth } from './useAuth';
 
 // Shared "add to bag" behaviour: auth check, API call, optimistic context update, toasts.
 export const useBag = () => {
   const { user, isAuthenticated, addToUserCart } = useAuth();
+  const navigate = useNavigate();
 
   const isInBag = (bookId) => !!user?.cart?.includes(bookId);
 
@@ -27,5 +29,13 @@ export const useBag = () => {
     }
   };
 
-  return { addToBag, isInBag };
+  // TODO(#12): curated books (mock data) have no _id yet — find the title on the
+  // shelves we've loaded, otherwise search for it.
+  const addCuratedToBag = (curated, shelfBooks = []) => {
+    const match = shelfBooks.find((b) => b.title.toLowerCase() === curated.title.toLowerCase());
+    if (match) addToBag(match._id);
+    else navigate(`/discover?q=${encodeURIComponent(curated.title)}`);
+  };
+
+  return { addToBag, addCuratedToBag, isInBag };
 };

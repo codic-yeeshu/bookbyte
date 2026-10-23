@@ -1,4 +1,5 @@
 import api from './axios';
+import { SAMPLE_ORDERS } from '../mocks/orders';
 
 // Admin specific APIs
 export const getAllOrders = async () => {
@@ -47,7 +48,6 @@ export const getRecentOrders = async () => {
     };
   } catch (err) {
     console.warn('Order history unavailable, showing sample orders.', err);
-    const { SAMPLE_ORDERS } = await import('../mocks/orders');
     return { sample: true, data: SAMPLE_ORDERS };
   }
 };

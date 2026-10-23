@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { getAllBooks } from '../api/books';
 import { getGenres } from '../api/genres';
@@ -156,16 +156,9 @@ const Genres = ({ genres }) => (
 );
 
 const StaffPick = ({ pick, books }) => {
-  const navigate = useNavigate();
-  const { addToBag } = useBag();
+  const { addCuratedToBag } = useBag();
   const { book, staff, quote, shortQuote } = pick;
-
-  // TODO(#12): curated books will come back with an _id; until then try to find the title on the shelves.
-  const handleAdd = () => {
-    const match = books.find((b) => b.title.toLowerCase() === book.title.toLowerCase());
-    if (match) addToBag(match._id);
-    else navigate(`/discover?q=${encodeURIComponent(book.title)}`);
-  };
+  const handleAdd = () => addCuratedToBag(book, books);
 
   return (
     <section className="order-6 mx-5 mt-10 flex flex-col gap-4 rounded-md border border-accent px-[22px] py-7 lg:order-5 lg:mx-auto lg:mt-0 lg:mb-20 lg:grid lg:w-[calc(100%-112px)] lg:max-w-[1168px] lg:grid-cols-[220px_1fr] lg:items-center lg:gap-16 lg:p-14">
