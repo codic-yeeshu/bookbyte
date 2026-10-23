@@ -1,164 +1,174 @@
 @import "tailwindcss";
+@import "./styles/tokens.css";
 
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-/* ------------------ */
-/* Root Theme Tokens  */
-/* ------------------ */
+/* Tailwind utilities read the tokens in styles/tokens.css — no colour values here.
+   Some names match the tokens (--color-bg …); Tailwind re-declares those inside
+   @layer theme, and the unlayered token rules win — so keep tokens.css unlayered. */
+@theme inline {
+  --color-*: initial;
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-raised: var(--bb-raised);
+  --color-ink: var(--color-text);
+  --color-muted: var(--bb-muted);
+  --color-accent: var(--color-accent);
+  --color-accent-ink: var(--bb-accent-ink);
+  --color-divider: var(--color-divider);
+  --color-success: var(--bb-success);
+  --color-danger: var(--bb-danger);
+  --color-cover-ink: var(--bb-cover-ink);
+  --color-cover-1: var(--bb-cover-1);
+  --color-cover-2: var(--bb-cover-2);
+  --color-cover-3: var(--bb-cover-3);
+  --color-cover-4: var(--bb-cover-4);
+  --color-cover-5: var(--bb-cover-5);
+  --color-cover-6: var(--bb-cover-6);
+  --color-accent-100: var(--color-accent-100);
+  --color-accent-200: var(--color-accent-200);
+  --color-accent-300: var(--color-accent-300);
+  --color-accent-400: var(--color-accent-400);
+  --color-accent-500: var(--color-accent-500);
+  --color-accent-600: var(--color-accent-600);
+  --color-accent-700: var(--color-accent-700);
+  --color-accent-800: var(--color-accent-800);
+  --color-accent-900: var(--color-accent-900);
+  --color-neutral-100: var(--color-neutral-100);
+  --color-neutral-200: var(--color-neutral-200);
+  --color-neutral-300: var(--color-neutral-300);
+  --color-neutral-400: var(--color-neutral-400);
+  --color-neutral-500: var(--color-neutral-500);
+  --color-neutral-600: var(--color-neutral-600);
+  --color-neutral-700: var(--color-neutral-700);
+  --color-neutral-800: var(--color-neutral-800);
+  --color-neutral-900: var(--color-neutral-900);
+  --color-white: #fff;
+  --color-black: #000;
+  --color-transparent: transparent;
+  --color-current: currentColor;
 
-:root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  /* Legacy names used by pages not yet redesigned — remove once every page is ported. */
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-text);
+  --color-card: var(--bb-raised);
+  --color-card-foreground: var(--color-text);
+  --color-primary: var(--color-accent);
+  --color-primary-foreground: var(--color-bg);
+  --color-border: var(--color-divider);
+  --color-input: var(--color-divider);
 
-  --card: #ffffff;
-  --card-foreground: #0f172a;
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-heading);
 
-  --primary: #6366f1;
-  --primary-foreground: #ffffff;
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
 
-  --border: #e6eaf0;
-  --input: #e2e8f0;
-  --ring: #6366f1;
-
-  --font-sans: "Inter", "Geist", system-ui, -apple-system, sans-serif;
-  --font-serif: "Merriweather", Georgia, serif;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 7px;
 }
-
-/* ------------------ */
-/* Dark Theme Tokens  */
-/* ------------------ */
-
-.dark {
-  --background: #0d1019ff;
-  --foreground: #e6edf6;
-
-  --card: #23232cff;
-  --card-foreground: #f1f5f9;
-
-  --primary: #a0d137ff;
-  --primary-foreground: #ffffff;
-
-  --border: #1e293b;
-  --input: #1e293b;
-  --ring: #818cf8;
-}
-
-/* ------------------ */
-/* Tailwind Theme Map */
-/* ------------------ */
-
-@theme {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-
-  --color-border: var(--border);
-
-  --font-sans: var(--font-sans);
-  --font-serif: var(--font-serif);
-
-  --animate-float: float 3s ease-in-out infinite;
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-}
-
-/* ------------------ */
-/* Base Layer         */
-/* ------------------ */
 
 @layer base {
-
-  html {
-    scroll-behavior: smooth;
-  }
-
+  html { scroll-behavior: smooth; }
   body {
-    @apply bg-background text-foreground transition-colors duration-300;
-    font-family: var(--font-sans);
-    font-feature-settings: "cv02","cv03","cv04","cv11";
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.55;
   }
-
-  button,
-  input,
-  textarea,
-  select {
-    border-color: var(--border);
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
   }
-
-  :focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 2px;
-  }
+  button, input, textarea, select { border-color: var(--color-divider); }
+  :focus { outline: none; }
+  :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  ::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
 }
 
-/* ------------------ */
-/* Components         */
-/* ------------------ */
-
+/* Classical design-system components (from the Claude Design project's styles.css). */
 @layer components {
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    cursor: pointer; text-decoration: none;
+    font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+    font-size: 14px; line-height: 1.2; color: var(--color-text);
+    background: transparent; border: 1px solid transparent;
+    padding: 9.2px 16.5px; border-radius: var(--radius-md);
+  }
+  .btn svg { display: block; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary { color: var(--color-accent); border-color: var(--color-accent); }
+  .btn-primary:hover { background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+  .btn-primary:active { background: color-mix(in srgb, var(--color-accent) 22%, transparent); }
+  .btn-secondary { border-color: var(--color-divider); }
+  .btn-secondary:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+  .btn-secondary:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
+  .btn-ghost { color: var(--color-accent); padding-inline: 4.6px; }
+  .btn-ghost:hover { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
+  .btn-ghost:active { background: color-mix(in srgb, var(--color-accent) 18%, transparent); }
+  .btn-icon { width: 36px; height: 36px; padding: 0; }
+  .btn-block { width: 100%; }
 
-  .book-card {
-    @apply bg-card text-card-foreground
-           rounded-xl border border-border
-           shadow-sm hover:shadow-xl
-           hover:border-primary/50
-           transition-all duration-300
-           overflow-hidden;
+  .input {
+    width: 100%; min-height: 36px; padding: 6px 10px; font: inherit;
+    font-size: 14px; color: var(--color-text); caret-color: var(--color-accent);
+    background: transparent;
+    border: 1px solid var(--color-divider); border-radius: var(--radius-md);
+  }
+  .input::placeholder { color: var(--bb-muted); }
+  .input:hover { border-color: color-mix(in srgb, var(--color-text) 45%, transparent); }
+  .input:focus-visible { border-color: var(--color-accent); outline-offset: 0; }
+
+  .seg {
+    display: inline-flex; overflow: hidden;
+    border: 1px solid var(--color-divider); border-radius: var(--radius-md);
+  }
+  .seg-opt {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 12px; font-size: 13px; cursor: pointer;
+  }
+  .seg-opt input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+  .seg-opt + .seg-opt { border-left: 1px solid var(--color-divider); }
+  .seg-opt:has(input:checked) { color: var(--color-accent); box-shadow: inset 0 0 0 1px var(--color-accent); }
+  .seg-opt:not(:has(input:checked)):hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+  .seg-opt:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+
+  .tag {
+    display: inline-flex; align-items: center; font-size: 11px;
+    letter-spacing: 0.02em; padding: 3px 10px; border-radius: 3px;
+  }
+  .tag-accent { background: var(--color-accent-100); color: var(--color-accent-800); }
+  .tag-neutral { background: var(--color-neutral-100); color: var(--color-neutral-800); }
+  .tag-outline { border: 1px solid var(--color-accent); color: var(--color-accent); }
+
+  /* Page column — mockups are 1280px wide with 56px gutters (20px on mobile). */
+  .page { width: 100%; max-width: 1280px; margin-inline: auto; padding-inline: 20px; }
+  @media (width >= 64rem) { .page { padding-inline: 56px; } }
+
+  .eyebrow {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--bb-accent-ink);
   }
 
-  .glass-nav {
-    @apply sticky top-0 z-50
-           backdrop-blur-md
-           bg-background/70
-           border-b border-border;
-  }
-
-  .book-title {
-    @apply font-serif font-bold tracking-tight text-xl;
-  }
-
-  .btn-primary {
-    @apply bg-primary text-primary-foreground
-           px-6 py-2.5 rounded-lg
-           font-medium
-           transition-all
-           active:scale-95
-           hover:opacity-90
-           focus:outline-none
-           focus-visible:ring-2
-           focus-visible:ring-(--ring)
-           focus-visible:ring-offset-2;
-
-    box-shadow: 0 0 15px rgba(99,102,241,0.3);
-  }
+  /* Legacy helpers used by pages not yet redesigned — remove once every page is ported. */
+  .book-card { @apply bg-raised text-ink rounded-md border border-divider shadow-sm overflow-hidden transition-shadow hover:shadow-md; }
+  .book-title { @apply font-heading font-semibold tracking-tight text-xl; }
+  .btn-primary:not(.btn) { @apply inline-flex items-center justify-center gap-1.5 rounded-md border px-6 py-2.5 font-heading font-semibold; }
 }
-
-/* ------------------ */
-/* Text Selection     */
-/* ------------------ */
-
-::selection {
-  @apply bg-primary/30 text-primary;
-}
-
-/* ------------------ */
-/* Reduced Motion     */
-/* ------------------ */
 
 @media (prefers-reduced-motion: reduce) {
-
-  * {
+  *, ::before, ::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-
 }

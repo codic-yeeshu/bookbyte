@@ -1,190 +1,133 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import React, { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
-import {
-  Search,
-  ShoppingCart,
-  User,
-  Sun,
-  Moon,
-  BookOpen,
-  Heart,
-  Menu,
-  X,
-  LogOut,
-  ChevronDown
-} from 'lucide-react';
-import { toggleTheme } from '../utils/themeUtils';
+import { Heart, User } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import MobileMenu from './MobileMenu';
+import { BagButton, Logo, SearchForm, ThemeToggle } from './NavParts';
 
-const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+const PRIMARY_LINKS = [
+  { label: 'Discover', to: '/discover' },
+  { label: 'New & Notable', to: '/new' },
+  { label: 'Collections', to: '/collections' },
+  { label: 'Journal', to: '/journal' },
+];
 
-  const { user, isAuthenticated, logout } = useAuth();
+const MenuIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 12h16" /><path d="M4 6h16" /><path d="M4 18h12" />
+  </svg>
+);
+
+// Profile + sign-out menu; the redesigned Profile page (1g) will take over sign-out.
+const AccountMenu = () => {
+  const [open, setOpen] = useState(false);
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const isActive = (path) => location.pathname === path;
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    toggleTheme()
-  };
-
-  const handleLogout = () => {
-    logout();
-    setIsProfileOpen(false);
-    navigate('/login');
-  };
 
   return (
-    <nav className="glass-nav px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto flex items-center justify-between h-16">
-        {/* Left Section: Logo & Desktop Links */}
-        <div className="flex items-center space-x-8">
-          <Link to="/" className="flex items-center space-x-2">
-            <BookOpen className="w-8 h-8 text-primary" />
-            <span className="text-2xl font-bold tracking-tight text-foreground">
-              Book<span className="text-primary">Byte</span>
-            </span>
-          </Link>
-
-          <div className="hidden md:flex items-center space-x-6 text-sm font-medium">
-            <Link to="/" className={clsx("transition-colors", isActive('/') ? "text-primary font-bold" : "text-foreground/80 hover:text-primary")}>Home</Link>
-            <Link to="/discover" className={clsx("transition-colors", isActive('/discover') ? "text-primary font-bold" : "text-foreground/80 hover:text-primary")}>Discover</Link>
-            <Link to="/favourites" className={clsx("transition-colors", isActive('/favourites') ? "text-primary font-bold" : "text-foreground/80 hover:text-primary")}>Favourites</Link>
-            <Link to="/about" className={clsx("transition-colors", isActive('/about') ? "text-primary font-bold" : "text-foreground/80 hover:text-primary")}>About</Link>
+    <div className="relative">
+      <button type="button" aria-label="Account" aria-expanded={open} onClick={() => setOpen(!open)} className="btn btn-icon">
+        <User size={18} strokeWidth={1.6} />
+      </button>
+      {open && (
+        <>
+          <button type="button" aria-hidden tabIndex={-1} className="fixed inset-0 z-40 cursor-default" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 z-50 mt-2 w-52 rounded-md border border-divider bg-raised py-2 shadow-lg">
+            <p className="border-b border-divider px-4 pb-2 text-xs text-muted">
+              Signed in as <span className="block truncate text-sm text-ink">{user?.username}</span>
+            </p>
+            <Link to="/profile" onClick={() => setOpen(false)} className="block px-4 py-2 text-sm text-ink no-underline hover:bg-surface">
+              Profile
+            </Link>
+            <button
+              type="button"
+              onClick={() => { logout(); setOpen(false); navigate('/login'); }}
+              className="block w-full px-4 py-2 text-left text-sm text-danger hover:bg-surface"
+            >
+              Sign out
+            </button>
           </div>
-        </div>
+        </>
+      )}
+    </div>
+  );
+};
 
-        {/* Center Section: Search Bar (Desktop) */}
-        <div className="hidden lg:flex flex-1 max-w-md mx-8">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Search for books..."
-              className="w-full bg-input border-border rounded-full py-2 pl-10 pr-4 text-sm focus:ring-primary focus:border-primary transition-all"
-            />
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-foreground/50" />
+const Navbar = () => {
+  const { user, isAuthenticated } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  const bagCount = user?.cart?.length || 0;
+
+  useEffect(() => setMenuOpen(false), [location.pathname]);
+
+  return (
+    <>
+      {/* Desktop — BB Nav */}
+      <header className="hidden flex-col border-b border-divider bg-bg text-ink lg:flex">
+        <div className="flex justify-center gap-6 border-b border-divider px-14 py-[7px] text-xs text-muted italic">
+          <span>Free shipping on orders over ₹499</span>
+          <span className="text-accent">·</span>
+          <span>New arrivals every Thursday</span>
+        </div>
+        <nav className="page grid grid-cols-[1fr_auto_1fr] items-center gap-8 py-[18px]">
+          <div className="flex gap-7 text-[15px]">
+            {PRIMARY_LINKS.map(({ label, to }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) => clsx(
+                  'border-b pb-[3px] no-underline',
+                  isActive ? 'border-accent text-accent' : 'border-transparent text-ink hover:text-accent'
+                )}
+              >
+                {label}
+              </NavLink>
+            ))}
           </div>
-        </div>
-
-        {/* Right Section: Theme Toggle & Auth */}
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={toggleDarkMode}
-            className="p-2 rounded-full hover:bg-foreground/5 transition-colors"
-            aria-label="Toggle Theme"
-          >
-            {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
-
-          <div className="hidden md:flex items-center space-x-4">
+          <Logo className="text-[34px]" />
+          <div className="flex items-center justify-end gap-1.5">
+            <SearchForm className="mr-2.5 w-[180px] border-b border-divider px-0.5 py-1.5" inputClassName="text-sm" />
+            {isAuthenticated && (
+              <Link to="/favourites" aria-label="Favourites" className="btn btn-icon">
+                <Heart size={18} strokeWidth={1.6} />
+              </Link>
+            )}
+            <BagButton count={bagCount} />
             {isAuthenticated ? (
-              <>
-                <Link to="/cart" className="relative p-2 rounded-full hover:bg-foreground/5 transition-colors">
-                  <ShoppingCart className="w-5 h-5" />
-                  <span className="absolute top-0 right-0 w-4 h-4 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center">{user?.cart?.length || 0}</span>
-                </Link>
-                <div className="relative">
-                  <button
-                    onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="flex items-center space-x-1 p-1 pr-2 rounded-full hover:bg-foreground/5 transition-colors"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                      <User className="w-4 h-4" />
-                    </div>
-                    <ChevronDown className={clsx("w-4 h-4 text-foreground/40 transition-transform", isProfileOpen && "rotate-180")} />
-                  </button>
-
-                  {isProfileOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-xl py-2 z-50 animate-in fade-in zoom-in-95">
-                      <div className="px-4 py-2 border-b border-border mb-2">
-                        <p className="text-xs text-foreground/40">Signed in as</p>
-                        <p className="text-sm font-bold truncate">{user?.username}</p>
-                      </div>
-                      <Link to="/profile" className="flex items-center space-x-2 px-4 py-2 text-sm hover:bg-foreground/5 transition-colors">
-                        <User className="w-4 h-4" />
-                        <span>Profile</span>
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Logout</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
+              <AccountMenu />
             ) : (
-              <div className="flex items-center space-x-2">
-                <Link to="/login" className="px-4 py-2 text-sm font-medium hover:text-primary transition-colors">Log In</Link>
-                <Link to="/signup" className="btn-primary px-4! py-2! text-sm">Sign Up</Link>
-              </div>
+              <>
+                <Link to="/login" className="btn btn-ghost px-2.5! py-2! text-sm">Sign in</Link>
+                <Link to="/signup" className="btn btn-primary px-3.5! py-2! text-sm">Join</Link>
+              </>
+            )}
+            <ThemeToggle className="btn-secondary ml-1 rounded-full" />
+          </div>
+        </nav>
+      </header>
+
+      {/* Mobile — BB M Header (brand mode) */}
+      <header className="border-b border-divider bg-bg text-ink lg:hidden">
+        <div className="grid grid-cols-[100px_1fr_100px] items-center px-2 pt-1 pb-2">
+          <button type="button" aria-label="Menu" onClick={() => setMenuOpen(true)} className="btn btn-icon size-11">
+            <MenuIcon />
+          </button>
+          <Logo className="justify-self-center text-[28px]" />
+          <div className="flex items-center justify-end">
+            <ThemeToggle className="size-11" size={19} />
+            {isAuthenticated ? (
+              <BagButton count={bagCount} size={20} className="size-11" />
+            ) : (
+              <Link to="/login" className="flex min-h-11 items-center px-2 text-sm whitespace-nowrap text-accent no-underline">Sign in</Link>
             )}
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-foreground/5 transition-colors"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden border-t border-border py-4 space-y-4 animate-in fade-in slide-in-from-top-2">
-          <div className="flex flex-col space-y-3 px-2">
-            <Link to="/" className="px-3 py-2 rounded-lg hover:bg-foreground/5 transition-colors">Home</Link>
-            <Link to="/discover" className="px-3 py-2 rounded-lg hover:bg-foreground/5 transition-colors">Discover</Link>
-            <Link to="/favourites" className="px-3 py-2 rounded-lg hover:bg-foreground/5 transition-colors">Favourites</Link>
-            <Link to="/about" className="px-3 py-2 rounded-lg hover:bg-foreground/5 transition-colors">About</Link>
-
-            <div className="pt-4 border-t border-border mt-2">
-              <div className="relative mb-4">
-                <input
-                  type="text"
-                  placeholder="Search books..."
-                  className="w-full bg-input border-border rounded-full py-2 pl-10 pr-4 text-sm"
-                />
-                <Search className="absolute left-3 top-2.5 w-4 h-4 text-foreground/50" />
-              </div>
-
-              {isAuthenticated ? (
-                <div className="flex flex-col space-y-2">
-                  <Link to="/profile" className="px-3 py-2 rounded-lg hover:bg-foreground/5 transition-colors flex items-center space-x-2">
-                    <User className="w-4 h-4" />
-                    <span>Profile ({user?.username})</span>
-                  </Link>
-                  <Link to="/cart" className="px-3 py-2 rounded-lg hover:bg-foreground/5 transition-colors flex items-center space-x-2">
-                    <ShoppingCart className="w-4 h-4" />
-                    <span>Cart</span>
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="px-3 py-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors flex items-center space-x-2"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span>Logout</span>
-                  </button>
-                </div>
-              ) : (
-                <div className="flex flex-col space-y-2">
-                  <Link to="/login" className="w-full text-center px-4 py-2 text-sm font-medium border border-border rounded-lg">Log In</Link>
-                  <Link to="/signup" className="w-full btn-primary text-center px-4! py-2! text-sm">Sign Up</Link>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </nav>
+      {menuOpen && <MobileMenu onClose={() => setMenuOpen(false)} />}
+    </>
   );
 };
 

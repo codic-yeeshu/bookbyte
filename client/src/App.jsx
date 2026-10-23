@@ -102,7 +102,22 @@ function App() {
           </Routes>
         </MainLayout>
       </Router>
-      <Toaster position="bottom-right" toastOptions={{ duration: 3000 }} />
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: 'var(--bb-raised)',
+            color: 'var(--color-text)',
+            border: '1px solid var(--color-divider)',
+            borderRadius: '4px',
+            boxShadow: 'var(--shadow-md)',
+            fontFamily: 'var(--font-body)',
+            fontSize: '14px',
+          },
+          iconTheme: { primary: 'var(--color-accent)', secondary: 'var(--bb-raised)' },
+        }}
+      />
     </AuthProvider>
   );
 }
