@@ -15,6 +15,7 @@ const { bookRouter } = require("./routes/book");
 const { favouriteRouter } = require("./routes/favourite");
 const { cartRouter } = require("./routes/cart");
 const { orderRouter } = require("./routes/order");
+const { newsletterRouter } = require("./routes/newsletter");
 
 app.get("/", (req, res) => {
   console.log("ping fired")
@@ -32,6 +33,7 @@ app.use("/api/book", bookRouter);
 app.use("/api/favourite", favouriteRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
+app.use("/api/newsletter", newsletterRouter);
 
 app.listen(PORT, () => {
   console.log(`SERVER IS UP ON PORT ${PORT}`, `http://localhost:${PORT}`);
