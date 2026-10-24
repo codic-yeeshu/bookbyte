@@ -30,8 +30,8 @@ const NewsletterForm = ({ buttonLabel, inputClassName }) => {
       await subscribeToNewsletter(email);
       toast.success("You're on the list — see you Sunday.");
       setEmail('');
-    } catch {
-      toast.error("Couldn't subscribe right now. Please try again.");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Couldn't subscribe right now. Please try again.");
     } finally {
       setSubmitting(false);
     }

@@ -1,4 +1,6 @@
-// TODO(#9): replace with api.post('/newsletter/subscribe', { email }) once the endpoint exists.
+import api from './axios';
+
 export const subscribeToNewsletter = async (email) => {
-  return { message: `Subscribed ${email} to the Bookbyte Letter.` };
+  const response = await api.post('/newsletter/subscribe', { email });
+  return response.data;
 };
