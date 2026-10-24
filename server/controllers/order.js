@@ -4,7 +4,7 @@ const User = require("../models/user");
 
 const placeOrder = async (req, res) => {
   try {
-    const { id } = req.headers;
+    const { id } = req.user;
     const { order } = req.body;
 
     for (const orderData of order) {
@@ -37,7 +37,7 @@ const placeOrder = async (req, res) => {
 
 const getOrderHistory = async (req, res) => {
   try {
-    const { id } = req.headers;
+    const { id } = req.user;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid User ID" });

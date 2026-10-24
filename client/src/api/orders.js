@@ -30,7 +30,7 @@ const STATUS_KEYS = {
   Canceled: 'cancelled',
 };
 
-// TODO(#19): today each order holds a single book and history fails without the `id` header (#5).
+// TODO(#19): today each order holds a single book.
 // Map what the API returns into the #19 shape; fall back to sample orders when it can't be read.
 export const getRecentOrders = async () => {
   try {
