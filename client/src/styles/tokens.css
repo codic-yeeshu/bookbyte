@@ -1,0 +1,63 @@
+/* BookByte — global theme tokens. Change colors HERE ONLY.
+   Light = :root / [data-theme="light"], Dark = [data-theme="dark"].
+   Mirrors bookbyte-tokens.css from the Claude Design project; index.css maps these
+   onto Tailwind utilities (bg-bg, text-ink, border-divider, text-accent …). */
+
+:root, [data-theme="light"] {
+  --color-bg: #f3f2f2;          /* page ground — "paper" */
+  --color-surface: #eae9e9;     /* mats, sunken panels */
+  --bb-raised: #f9f7f5;         /* cards / inputs lifted off the ground */
+  --color-text: #201f1d;        /* ink */
+  --bb-muted: #605d5d;          /* secondary text */
+  --color-accent: #b68235;      /* gilt — strokes, icons, large type */
+  --bb-accent-ink: #7d5411;     /* gilt for body-size text (AA) */
+  --color-divider: color-mix(in srgb, #201f1d 16%, transparent);
+  --bb-success: #4f6b3a;
+  --bb-danger: #9a3b2c;
+
+  --color-accent-100: #fff3e4; --color-accent-200: #ffe3bf; --color-accent-300: #facb8d;
+  --color-accent-400: #e1ad66; --color-accent-500: #c28d41; --color-accent-600: #a06f24;
+  --color-accent-700: #7d5411; --color-accent-800: #5a3b0a; --color-accent-900: #3a270d;
+  --color-neutral-100: #f8f4f4; --color-neutral-200: #eae7e7; --color-neutral-300: #d7d3d3;
+  --color-neutral-400: #bab6b6; --color-neutral-500: #9b9797; --color-neutral-600: #7d7979;
+  --color-neutral-700: #605d5d; --color-neutral-800: #444141; --color-neutral-900: #2d2b2b;
+
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2d2b2b 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2d2b2b 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2d2b2b 22%, transparent);
+
+  /* book-cover placeholders (same in both modes) */
+  --bb-cover-1: #5a3b0a; --bb-cover-2: #2d2b2b; --bb-cover-3: #a06f24;
+  --bb-cover-4: #605d5d; --bb-cover-5: #3a270d; --bb-cover-6: #7d5411;
+  --bb-cover-ink: #f6efe3;
+
+  --font-heading: "Instrument Serif", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+  --font-ui: var(--font-body);      /* buttons, nav, inputs */
+  --font-heading-weight: 400;       /* Instrument Serif has a single weight */
+}
+
+[data-theme="dark"] {
+  --color-bg: #15130f;          /* lamplit library */
+  --color-surface: #1e1b17;
+  --bb-raised: #1b1814;
+  --color-text: #ece5d8;
+  --bb-muted: #a69e92;
+  --color-accent: #d6a35a;
+  --bb-accent-ink: #e1ad66;
+  --color-divider: color-mix(in srgb, #ece5d8 14%, transparent);
+  --bb-success: #9bb57f;
+  --bb-danger: #e08a78;
+
+  /* ramps flip so "100 = tint, 800 = ink-on-tint" still holds */
+  --color-accent-100: #2a1e0f; --color-accent-200: #3a270d; --color-accent-300: #5a3b0a;
+  --color-accent-400: #a06f24; --color-accent-500: #c28d41; --color-accent-600: #e1ad66;
+  --color-accent-700: #facb8d; --color-accent-800: #ffe3bf; --color-accent-900: #fff3e4;
+  --color-neutral-100: #221f1b; --color-neutral-200: #2d2b2b; --color-neutral-300: #444141;
+  --color-neutral-400: #605d5d; --color-neutral-500: #7d7979; --color-neutral-600: #9b9797;
+  --color-neutral-700: #bab6b6; --color-neutral-800: #d7d3d3; --color-neutral-900: #f8f4f4;
+
+  --shadow-sm: 0 0 0 1px color-mix(in srgb, #ece5d8 6%, transparent);
+  --shadow-md: 0 0 0 1px color-mix(in srgb, #ece5d8 7%, transparent), 0 6px 18px rgba(0,0,0,.45);
+  --shadow-lg: 0 0 0 1px color-mix(in srgb, #ece5d8 8%, transparent), 0 16px 40px rgba(0,0,0,.6);
+}

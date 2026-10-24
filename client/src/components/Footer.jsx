@@ -1,129 +1,128 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  BookOpen,
-  Twitter,
-  Github,
-  Instagram,
-  Mail
-} from 'lucide-react';
-import toast from 'react-hot-toast'
+import { Plus } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { subscribeToNewsletter } from '../api/newsletter';
 
-const TooltipWrapper = ({ text, children }) => (
-  <div className="relative group inline-flex justify-center overflow-visible">
-    {children}
-    <div className="absolute bottom-full mb-2 w-max px-2.5 py-1 text-[11px] font-bold tracking-wide text-white bg-primary rounded-md shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-100">
-      {text}
-      <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-foreground" />
-    </div>
-  </div>
-);
+// Items without `to` have no page yet and render as plain text.
+const COLUMNS = [
+  { title: 'Shop', items: [['Discover', '/discover'], ['New & Notable', '/new'], ['Bestsellers', '/new'], ['Gift cards']] },
+  { title: 'Help', items: [['Shipping'], ['Returns'], ['Track an order'], ['Contact']] },
+  { title: 'Bookbyte', items: [['Our story', '/about'], ['Journal', '/journal'], ['Careers'], ['Press']] },
+  { title: 'Account', items: [['Profile', '/profile'], ['Favourites', '/favourites'], ['Orders', '/profile'], ['Settings', '/profile']] },
+];
 
-const Footer = () => {
-  const currentYear = new Date().getFullYear();
+const FooterLink = ({ label, to }) =>
+  to ? (
+    <Link to={to} className="text-muted no-underline hover:text-accent">{label}</Link>
+  ) : (
+    <span className="text-muted">{label}</span>
+  );
+
+const NewsletterForm = ({ buttonLabel, inputClassName }) => {
+  const [email, setEmail] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      await subscribeToNewsletter(email);
+      toast.success("You're on the list — see you Sunday.");
+      setEmail('');
+    } catch {
+      toast.error("Couldn't subscribe right now. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
-    <footer className="bg-card border-t border-border mt-auto">
-      <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          {/* Brand Column */}
-          <div className="md:col-span-1 space-y-4">
-            <Link to="/" className="flex items-center space-x-2">
-              <BookOpen className="w-8 h-8 text-primary" />
-              <span className="text-2xl font-bold tracking-tight text-foreground">
-                Book<span className="text-primary">Byte</span>
-              </span>
-            </Link>
-            <p className="text-sm text-foreground/60 leading-relaxed max-w-xs">
-              Your ultimate destination for discovering, tracking, and exploring your favorite books.
-              Built with love for book lovers everywhere.
+    <form onSubmit={handleSubmit} className="flex gap-2">
+      <input
+        type="email"
+        required
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="you@example.com"
+        aria-label="Email address"
+        className={`input ${inputClassName ?? ''}`}
+      />
+      <button type="submit" disabled={submitting} className="btn btn-primary whitespace-nowrap">
+        {buttonLabel}
+      </button>
+    </form>
+  );
+};
+
+const Footer = () => {
+  const year = new Date().getFullYear();
+
+  return (
+    <footer className="border-t border-divider bg-bg text-ink">
+      {/* Desktop — BB Footer */}
+      <div className="page hidden flex-col gap-12 pt-16 pb-7 lg:flex">
+        <div className="grid grid-cols-[1.4fr_1px_1fr] items-end gap-12">
+          <div className="flex flex-col gap-3.5">
+            <span className="eyebrow">The Bookbyte Letter</span>
+            <h2 className="m-0 text-[46px] leading-[1.02] font-normal tracking-[-0.02em] text-balance">
+              One good book, every <em className="text-accent">Sunday</em> morning.
+            </h2>
+          </div>
+          <div className="self-stretch bg-divider" />
+          <div className="flex flex-col gap-2.5">
+            <p className="m-0 text-justify text-sm text-muted hyphens-auto">
+              A pick and a passage from our shelves, now and then.
             </p>
-            <div className="flex items-center space-x-4">
-              <TooltipWrapper text="View Source">
-                <a href="https://github.com/codic-yeeshu/bookbyte" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-foreground/5 transition-colors text-foreground/60 hover:text-primary block">
-                  <Github className="w-5 h-5" />
-                </a>
-              </TooltipWrapper>
-              <TooltipWrapper text="Work in progress 🚧">
-                <a href="#" className="p-2 rounded-full hover:bg-foreground/5 transition-colors text-foreground/60 hover:text-primary block">
-                  <Twitter className="w-5 h-5" />
-                </a>
-              </TooltipWrapper>
-              <TooltipWrapper text="Work in progress 🚧">
-                <a href="#" className="p-2 rounded-full hover:bg-foreground/5 transition-colors text-foreground/60 hover:text-primary block">
-                  <Instagram className="w-5 h-5" />
-                </a>
-              </TooltipWrapper>
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div className="md:col-span-1">
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-6">Explore</h3>
-            <ul className="space-y-4 text-sm">
-              <li><Link to="/" className="text-foreground/60 hover:text-primary transition-colors">Home</Link></li>
-              <li><Link to="/books" className="text-foreground/60 hover:text-primary transition-colors">All Books</Link></li>
-              <li><Link to="/favorites" className="text-foreground/60 hover:text-primary transition-colors">Favorites</Link></li>
-              <li><Link to="/cart" className="text-foreground/60 hover:text-primary transition-colors">Shopping Cart</Link></li>
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div className="md:col-span-1">
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-6">Support</h3>
-            <ul className="space-y-4 text-sm">
-              <li>
-                <TooltipWrapper text="Work in progress 🚧">
-                  <Link to="#" className="text-foreground/60 hover:text-primary transition-colors">Help Center</Link>
-                </TooltipWrapper>
-              </li>
-              <li>
-                <TooltipWrapper text="Work in progress 🚧">
-                  <Link to="#" className="text-foreground/60 hover:text-primary transition-colors">Terms of Service</Link>
-                </TooltipWrapper>
-              </li>
-              <li>
-                <TooltipWrapper text="Work in progress 🚧">
-                  <Link to="#" className="text-foreground/60 hover:text-primary transition-colors">Privacy Policy</Link>
-                </TooltipWrapper>
-              </li>
-              <li>
-                <TooltipWrapper text="Work in progress 🚧">
-                  <Link to="#" className="text-foreground/60 hover:text-primary transition-colors">Contact Us</Link>
-                </TooltipWrapper>
-              </li>
-            </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div className="md:col-span-1">
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-6">Stay Updated</h3>
-            <p className="text-sm text-foreground/60 mb-4">Subscribe to our newsletter for updates and new releases.</p>
-            <form onSubmit={(e) => {e.preventDefault(); toast.success("Subscribed successfully..")}} className="flex flex-col space-y-3">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="bg-input border-border rounded-lg px-4 py-2 text-sm focus:ring-primary focus:border-primary transition-all"
-              />
-              <button type="submit" className="btn-primary w-full py-2! text-sm">
-                Subscribe
-              </button>
-            </form>
+            <NewsletterForm buttonLabel="Subscribe" />
           </div>
         </div>
-
-        <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <p className="text-sm text-foreground/50">
-            &copy; {currentYear} BookByte. All rights reserved.
-          </p>
-          <div className="flex items-center space-x-6">
-            <TooltipWrapper text="Work in progress 🚧">
-              <Link to="#" className="text-xs text-foreground/40 hover:text-primary transition-colors">Sitemap</Link>
-            </TooltipWrapper>
-            <TooltipWrapper text="Work in progress 🚧">
-              <Link to="#" className="text-xs text-foreground/40 hover:text-primary transition-colors">Cookies Settings</Link>
-            </TooltipWrapper>
+        <div className="h-px bg-divider" />
+        <div className="grid grid-cols-[repeat(4,1fr)_1.2fr] gap-8 text-sm">
+          {COLUMNS.map(({ title, items }) => (
+            <div key={title} className="flex flex-col gap-[9px]">
+              <span className="mb-1 font-heading text-lg font-semibold">{title}</span>
+              {items.map(([label, to]) => <FooterLink key={label} label={label} to={to} />)}
+            </div>
+          ))}
+          <div className="flex flex-col items-end gap-[9px] text-right">
+            <span className="font-heading text-[30px] leading-none font-medium">Book<em className="text-accent">byte</em></span>
+            <span className="text-sm text-muted italic">Booksellers, online since 2024.</span>
           </div>
+        </div>
+        <div className="flex justify-between border-t border-divider pt-[18px] text-xs text-muted">
+          <span>© {year} Bookbyte. Set in Instrument Serif &amp; DM Sans.</span>
+          <div className="flex gap-[22px]">
+            <span>Privacy</span><span>Terms</span><span>Cookies</span><span>₹ INR · English</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile — from mockup 2a */}
+      <div className="flex flex-col gap-[22px] px-5 pt-9 pb-7 lg:hidden">
+        <div className="flex flex-col gap-2.5">
+          <span className="eyebrow">The Bookbyte Letter</span>
+          <span className="font-heading text-[30px] leading-[1.05]">
+            One good book, every <em className="text-accent">Sunday</em>.
+          </span>
+          <NewsletterForm buttonLabel="Join" inputClassName="min-h-11" />
+        </div>
+        <div className="border-t border-divider">
+          {COLUMNS.map(({ title, items }) => (
+            <details key={title} className="group border-b border-divider">
+              <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between font-heading text-[19px] font-semibold [&::-webkit-details-marker]:hidden">
+                {title}
+                <Plus size={16} strokeWidth={1.6} className="text-muted transition-transform group-open:rotate-45" />
+              </summary>
+              <div className="flex flex-col gap-2.5 pb-4 text-[15px]">
+                {items.map(([label, to]) => <FooterLink key={label} label={label} to={to} />)}
+              </div>
+            </details>
+          ))}
+        </div>
+        <div className="flex items-baseline justify-between">
+          <span className="font-heading text-2xl font-medium">Book<em className="text-accent">byte</em></span>
+          <span className="text-xs text-muted">© {year} · ₹ INR</span>
         </div>
       </div>
     </footer>
