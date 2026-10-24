@@ -1,8 +1,11 @@
+const mongoose = require("mongoose");
 const User = require("../models/user");
 
 const addBookToCart = async (req, res) => {
   try {
     const { bookId } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(bookId))
+      return res.status(400).json({ message: "Invalid book ID" });
     const { id } = req.user;
     const userData = await User.findById(id);
 
@@ -23,6 +26,8 @@ const addBookToCart = async (req, res) => {
 const removeBookFromCart = async (req, res) => {
   try {
     const { bookId } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(bookId))
+      return res.status(400).json({ message: "Invalid book ID" });
     const { id } = req.user;
     const userData = await User.findById(id);
 

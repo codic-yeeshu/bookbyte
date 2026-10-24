@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Book = require("../models/book");
 const User = require("../models/user");
 
@@ -36,6 +37,8 @@ const updateBook = async (req, res) => {
         .status(400)
         .json({ message: "You do not have access to update book" });
     const bookId = req.headers["bookid"];
+    if (!mongoose.Types.ObjectId.isValid(bookId))
+      return res.status(400).json({ message: "Invalid book ID" });
     const { url, title, author, price, desc, language } = req.body;
     if (!url || !title || !author || !price || !desc || !language) {
       return res.status(400).json({ message: "All fields are required" });
@@ -68,7 +71,12 @@ const deleteBook = async (req, res) => {
         .status(400)
         .json({ message: "You do not have access to delete book" });
     const bookId = req.headers["bookid"];
-    await Book.findByIdAndDelete(bookId);
+    if (!mongoose.Types.ObjectId.isValid(bookId))
+      return res.status(400).json({ message: "Invalid book ID" });
+    const deletedBook = await Book.findByIdAndDelete(bookId);
+    if (!deletedBook) {
+      return res.status(404).json({ message: "Book not found" });
+    }
 
     res.status(200).json({ message: "Book deleted Successfully..." });
   } catch (error) {
@@ -108,6 +116,8 @@ const getRandomBooks = async (req, res) => {
 const getBookById = async (req, res) => {
   try {
     const { bookid } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(bookid))
+      return res.status(400).json({ message: "Invalid book ID" });
     const book = await Book.findById(bookid);
     if (!book) return res.status(404).json({ message: "Book not found." });
 

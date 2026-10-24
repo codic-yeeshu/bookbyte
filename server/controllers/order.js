@@ -7,6 +7,14 @@ const placeOrder = async (req, res) => {
     const { id } = req.user;
     const { order } = req.body;
 
+    if (
+      !Array.isArray(order) ||
+      !order.length ||
+      !order.every((o) => mongoose.Types.ObjectId.isValid(o?._id))
+    ) {
+      return res.status(400).json({ message: "Invalid order" });
+    }
+
     const orderIds = [];
     const bookIds = [];
     for (const orderData of order) {
@@ -105,12 +113,17 @@ const updateStatus = async (req, res) => {
         .status(403)
         .json({ message: "You are not authorized to update Orders" });
     const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(400).json({ message: "Invalid order ID" });
     const { status } = req.body;
-    await Order.findByIdAndUpdate(
+    const updatedOrder = await Order.findByIdAndUpdate(
       id,
       { status: status },
       { new: true, runValidators: true }
     );
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
     return res.status(200).json({
       status: "Success",
       message: "Status updated Successfully",

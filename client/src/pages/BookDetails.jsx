@@ -135,7 +135,7 @@ const BookDetails = () => {
       })
       .catch((err) => {
         console.error(err);
-        if (!cancelled) setStatus(err.response?.status === 404 ? 'missing' : 'error');
+        if (!cancelled) setStatus([400, 404].includes(err.response?.status) ? 'missing' : 'error');
       });
     return () => { cancelled = true; };
   }, [id]);
