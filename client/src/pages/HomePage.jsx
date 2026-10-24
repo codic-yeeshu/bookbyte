@@ -18,9 +18,9 @@ const PERKS = [
 ];
 
 const MEMBER_PERKS = [
-  { n: 'i.', t: 'Your shelf', d: 'Save favourites and pick up where you left off, on any device.' },
-  { n: 'ii.', t: 'Order tracking', d: 'Every parcel, from our packing table to your door.' },
-  { n: 'iii.', t: 'First look', d: 'New arrivals a day before everyone else.' },
+  { n: 'i.', t: 'Your shelf', d: 'Save books on any device.' },
+  { n: 'ii.', t: 'Order tracking', d: 'Follow every parcel to your door.' },
+  { n: 'iii.', t: 'First look', d: 'See new arrivals a day early.' },
 ];
 
 const SHELF_SIZE = 6;
@@ -36,9 +36,8 @@ const Hero = ({ curation }) => {
         <h1 className="m-0 text-[56px] leading-[.92] font-normal tracking-[-0.03em] lg:text-[clamp(64px,8.1vw,104px)]">
           Books worth <em className="text-accent">staying up</em> for.
         </h1>
-        <p className="m-0 max-w-[470px] text-[15px] leading-[1.6] text-muted lg:text-justify lg:text-base lg:leading-[1.65] lg:hyphens-auto">
-          <span className="lg:hidden">A small, carefully kept bookshop on the internet — chosen by people who actually read, delivered in two days.</span>
-          <span className="hidden lg:inline">A small, carefully kept bookshop on the internet. Thousands of titles, chosen and annotated by people who actually read them — delivered to your door in two days.</span>
+        <p className="m-0 max-w-[470px] text-[15px] leading-[1.6] text-muted lg:text-base lg:leading-[1.65]">
+          A small, carefully kept bookshop. Books picked by readers, delivered in two days.
         </p>
         <div className="flex items-center gap-3">
           <Link to="/discover" className="btn btn-primary btn-block px-[22px] py-3.5 text-base lg:w-auto lg:py-[13px]">
@@ -135,7 +134,7 @@ const Genres = ({ genres }) => (
     <div className="flex flex-col gap-3.5 lg:border-t lg:border-ink lg:pt-7">
       <span className="eyebrow hidden tracking-[.16em] lg:inline">Contents</span>
       <h2 className="m-0 mb-1.5 text-[34px] leading-none font-normal lg:mb-0 lg:text-[52px]">Browse by <em>genre</em></h2>
-      <p className="m-0 hidden text-justify text-sm text-muted lg:block">Our shelves, laid out like the front of a good book. Pick a chapter and wander.</p>
+      <p className="m-0 hidden text-sm text-muted lg:block">Pick a chapter and wander.</p>
     </div>
     <div className="grid border-t border-ink lg:grid-cols-2 lg:gap-x-12">
       {genres.map((genre, i) => (
@@ -193,9 +192,8 @@ const Finder = () => (
     </div>
     <div className="hidden self-stretch bg-divider lg:block" />
     <div className="flex flex-col gap-3.5 lg:gap-5">
-      <p className="m-0 text-sm leading-[1.6] text-muted lg:text-justify lg:text-base lg:leading-[1.65] lg:hyphens-auto">
-        <span className="lg:hidden">Four quick questions about mood, authors and length — we'll pull the books that fit.</span>
-        <span className="hidden lg:inline">Tell us what you're in the mood for, the authors you already love and how long you'd like to read. Four quick questions — we'll pull the books that fit from our shelves.</span>
+      <p className="m-0 text-sm leading-[1.6] text-muted lg:text-base lg:leading-[1.65]">
+        Four quick questions, and we'll pull the books that fit.
       </p>
       <div className="flex items-center gap-4">
         <Link to="/finder" className="btn btn-primary btn-block px-[22px] py-3.5 text-base lg:w-auto lg:py-[13px]">
@@ -214,8 +212,8 @@ const Membership = () => (
       <h2 className="m-0 text-[40px] leading-[.98] font-normal lg:text-[56px] lg:leading-none lg:tracking-[-0.02em]">
         Keep a shelf of your <em className="text-accent">own.</em>
       </h2>
-      <p className="m-0 hidden text-justify text-[15px] leading-[1.65] text-muted hyphens-auto lg:block">
-        Save books for later, follow every order and hear about new arrivals first. Joining takes thirty seconds and costs nothing.
+      <p className="m-0 hidden text-[15px] leading-[1.65] text-muted lg:block">
+        Save books, track orders and see new arrivals first. Free to join.
       </p>
       <div className="mt-1.5 hidden items-center gap-3 lg:flex">
         <Link to="/signup" className="btn btn-primary px-[22px] py-[13px] text-base">Create a free account</Link>

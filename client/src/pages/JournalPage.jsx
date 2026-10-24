@@ -93,7 +93,7 @@ const JournalPage = () => {
                     {f.titleParts[0]}<em>{f.titleParts[1]}</em>{f.titleParts[2]}
                   </button>
                 </h2>
-                <p className="m-0 hidden text-justify text-[15px] leading-[1.65] text-muted hyphens-auto lg:block">{f.dek}</p>
+                <p className="m-0 hidden text-[15px] leading-[1.65] text-muted lg:block">{f.dek}</p>
                 <div className="flex items-center justify-between lg:border-t lg:border-divider lg:pt-3.5">
                   <span className="text-xs text-muted italic lg:text-[13px]">By {f.author} · {longDate(f.publishedAt)}</span>
                   <button type="button" onClick={openPost} className="hidden text-sm text-accent underline underline-offset-4 lg:inline">Read the essay →</button>

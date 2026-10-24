@@ -31,9 +31,10 @@
   --bb-cover-4: #605d5d; --bb-cover-5: #3a270d; --bb-cover-6: #7d5411;
   --bb-cover-ink: #f6efe3;
 
-  --font-heading: "Cormorant Garamond", Georgia, serif;
-  --font-body: "Lora", Georgia, serif;
-  --font-heading-weight: 600;
+  --font-heading: "Instrument Serif", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+  --font-ui: var(--font-body);      /* buttons, nav, inputs */
+  --font-heading-weight: 400;       /* Instrument Serif has a single weight */
 }
 
 [data-theme="dark"] {

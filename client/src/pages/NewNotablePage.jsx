@@ -41,7 +41,7 @@ const Featured = ({ featured, onAdd }) => (
       <span className="tag tag-accent self-start">{featured.label}</span>
       <h2 className="m-0 text-[26px] leading-none font-normal lg:text-[56px]">{featured.book.title}</h2>
       <span className="font-heading text-sm text-muted italic lg:text-[22px]">{featured.book.author} · {featured.subtitle}</span>
-      <p className="m-0 hidden text-justify text-[15px] leading-[1.65] text-muted hyphens-auto lg:block">{featured.blurb}</p>
+      <p className="m-0 hidden text-[15px] leading-[1.65] text-muted lg:block">{featured.blurb}</p>
       <div className="mt-1 flex items-center gap-3">
         <button type="button" onClick={onAdd} className="btn btn-primary btn-block lg:w-auto">
           <span className="lg:hidden">Add</span><span className="hidden lg:inline">Add to bag</span> · ₹{featured.book.price}

@@ -15,7 +15,7 @@ export const COLLECTIONS = {
     slug: 'the-gothic-winter',
     title: 'The Gothic',
     titleEmphasis: 'Winter',
-    blurb: 'Twenty-four books for long nights — crumbling houses, unreliable narrators and candles that go out at exactly the wrong moment.',
+    blurb: 'Twenty-four books for long nights: crumbling houses and unreliable narrators.',
     count: 24,
     curator: 'Ananya',
     covers: [

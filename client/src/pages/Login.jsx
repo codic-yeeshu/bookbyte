@@ -60,7 +60,7 @@ const Login = () => {
         ))}
       </div>
       <div className="flex flex-col gap-3">
-        <p className="m-0 font-heading text-[34px] leading-[1.12] italic">“Welcome back. Your shelf has been keeping your place.”</p>
+        <p className="m-0 font-heading text-[34px] leading-[1.12] italic">“Your shelf kept your place.”</p>
         <span className="text-[13px] text-muted">Free shipping over ₹499 · 14-day returns</span>
       </div>
     </>

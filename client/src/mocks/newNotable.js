@@ -4,7 +4,7 @@ export const NEW_AND_NOTABLE = {
     book: { title: 'Anna Karenina', author: 'Leo Tolstoy', price: 449 },
     label: 'Out this week',
     subtitle: 'a new translation',
-    blurb: "A fresh, quick-footed translation that makes Tolstoy's most famous opening line feel like it was written last week. Clothbound, with a foreword by the translator.",
+    blurb: "A quick-footed translation that makes Tolstoy's famous opening feel new. Clothbound.",
   },
   bestsellers: [
     { title: 'Anna Karenina', author: 'Leo Tolstoy', rank: 1, previousRank: null },

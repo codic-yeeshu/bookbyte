@@ -45,9 +45,8 @@ const CollectionsPage = () => {
           <span className="eyebrow tracking-[.16em]">Curated shelves</span>
           <h1 className="m-0 text-[50px] leading-none font-normal tracking-[-0.025em] lg:text-[76px]">Collections</h1>
         </div>
-        <p className="m-0 text-sm leading-[1.6] text-muted lg:text-justify lg:text-[15px] lg:leading-[1.65] lg:hyphens-auto">
-          <span className="lg:hidden">Small, opinionated shelves from our staff — short enough to finish, good enough to keep.</span>
-          <span className="hidden lg:inline">Small, opinionated shelves put together by our staff — for a season, a feeling, or a question you didn't know you had. Each one is short enough to finish and good enough to keep.</span>
+        <p className="m-0 text-sm leading-[1.6] text-muted lg:text-[15px] lg:leading-[1.65]">
+          Small shelves picked by our staff. Short enough to finish, good enough to keep.
         </p>
       </div>
 
@@ -69,7 +68,7 @@ const CollectionsPage = () => {
               <h2 className="m-0 text-[38px] leading-none font-normal lg:text-[60px]">
                 {data.featured.title} <em className="text-accent">{data.featured.titleEmphasis}</em>
               </h2>
-              <p className="m-0 hidden text-justify text-[15px] leading-[1.65] text-muted lg:block">{data.featured.blurb}</p>
+              <p className="m-0 hidden text-[15px] leading-[1.65] text-muted lg:block">{data.featured.blurb}</p>
               <span className="text-[13px] text-muted italic lg:hidden">{data.featured.count} books · curated by {data.featured.curator}</span>
               <div className="flex items-center gap-3.5">
                 <button

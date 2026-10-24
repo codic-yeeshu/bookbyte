@@ -13,9 +13,9 @@ import PasswordInput from '../components/PasswordInput';
 // unique username (used to sign in) and an address, so both stay until #24 lands.
 
 const MEMBER_PERKS = [
-  { n: 'i.', t: 'Your shelf', d: 'Save favourites and pick up where you left off, on any device.' },
-  { n: 'ii.', t: 'Order tracking', d: 'Every parcel, from our packing table to your door.' },
-  { n: 'iii.', t: 'First look', d: 'New arrivals a day before everyone else.' },
+  { n: 'i.', t: 'Your shelf', d: 'Save books on any device.' },
+  { n: 'ii.', t: 'Order tracking', d: 'Follow every parcel to your door.' },
+  { n: 'iii.', t: 'First look', d: 'See new arrivals a day early.' },
 ];
 
 const MIN_PASSWORD = 5; // matches the server's current rule
@@ -74,7 +74,7 @@ const Signup = () => {
   const aside = (
     <>
       <div className="flex flex-col gap-2.5">
-        <p className="m-0 mb-3.5 font-heading text-[38px] leading-[1.1] italic">“Your shelf, your notes and your next book — kept in one place.”</p>
+        <p className="m-0 mb-3.5 font-heading text-[38px] leading-[1.1] italic">“Your shelf and your next book, in one place.”</p>
         <div className="border-t border-divider">
           {MEMBER_PERKS.map(({ n, t, d }) => (
             <div key={n} className="grid grid-cols-[40px_1fr] border-b border-divider py-4">

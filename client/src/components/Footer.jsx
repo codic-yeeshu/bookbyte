@@ -72,7 +72,7 @@ const Footer = () => {
           <div className="self-stretch bg-divider" />
           <div className="flex flex-col gap-2.5">
             <p className="m-0 text-justify text-sm text-muted hyphens-auto">
-              A short letter from our shelves — a pick, a passage, and nothing you didn't ask for.
+              A pick and a passage from our shelves, now and then.
             </p>
             <NewsletterForm buttonLabel="Subscribe" />
           </div>
@@ -91,7 +91,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="flex justify-between border-t border-divider pt-[18px] text-xs text-muted">
-          <span>© {year} Bookbyte. Set in Cormorant Garamond &amp; Lora.</span>
+          <span>© {year} Bookbyte. Set in Instrument Serif &amp; DM Sans.</span>
           <div className="flex gap-[22px]">
             <span>Privacy</span><span>Terms</span><span>Cookies</span><span>₹ INR · English</span>
           </div>

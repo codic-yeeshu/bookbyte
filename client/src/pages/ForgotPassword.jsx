@@ -29,7 +29,7 @@ const ForgotPassword = () => {
   const aside = (
     <>
       <span aria-hidden className="font-heading text-[240px] leading-[.8] text-transparent [-webkit-text-stroke:1px_var(--color-accent)]">?</span>
-      <p className="m-0 font-heading text-[34px] leading-[1.12] italic">“It happens to the best of readers. We'll get you back to your page.”</p>
+      <p className="m-0 font-heading text-[34px] leading-[1.12] italic">“It happens to the best of readers.”</p>
     </>
   );
 
@@ -40,7 +40,7 @@ const ForgotPassword = () => {
           <span className="grid size-16 place-items-center rounded-full border border-accent text-accent"><Mail size={24} strokeWidth={1.6} /></span>
           <h1 className="m-0 text-[46px] leading-none font-normal tracking-[-0.025em] lg:text-[60px]">Check your <em className="text-accent">inbox</em></h1>
           <p className="m-0 text-[15px] leading-[1.65] text-muted">
-            We've sent a reset link to <span className="text-ink">{sentTo}</span>. It's valid for 30 minutes — check spam if it doesn't arrive.
+            We've sent a reset link to <span className="text-ink">{sentTo}</span>. Check spam if it's not there.
           </p>
           <div className="flex gap-3">
             <Link to="/login" className="btn btn-primary">Back to sign in</Link>
@@ -51,7 +51,7 @@ const ForgotPassword = () => {
         <form onSubmit={handleSubmit} className="flex w-full max-w-[420px] flex-col gap-5">
           <span className="eyebrow tracking-[.16em]">Reset password</span>
           <h1 className="m-0 text-[46px] leading-none font-normal tracking-[-0.025em] lg:text-[60px]">Forgot your <em className="text-accent">password?</em></h1>
-          <p className="m-0 text-[15px] leading-[1.65] text-muted">Enter the email you signed up with and we'll send a link to choose a new one.</p>
+          <p className="m-0 text-[15px] leading-[1.65] text-muted">We'll email you a link to set a new one.</p>
           <div>
             <label htmlFor="reset-email" className="mb-1.5 block text-xs text-ink/70">Email</label>
             <input id="reset-email" type="email" className="input min-h-[46px] lg:min-h-9" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required />

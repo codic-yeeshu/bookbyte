@@ -131,7 +131,7 @@ const CartPage = () => {
     return (
       <div className="page flex flex-col items-start gap-4 pt-10 pb-16 lg:pt-16">
         <h1 className="m-0 text-[50px] leading-none font-normal tracking-[-0.025em] lg:text-[76px]">Your bag</h1>
-        <p className="m-0 max-w-[460px] text-muted">Sign in to see your bag — it's kept safe on your account.</p>
+        <p className="m-0 max-w-[460px] text-muted">Sign in to see your bag.</p>
         <div className="flex gap-3">
           <Link to="/login" className="btn btn-primary">Sign in</Link>
           <Link to="/signup" className="btn btn-ghost">Create a free account</Link>

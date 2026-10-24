@@ -140,7 +140,7 @@ const FavouritesPage = () => {
       <div className="pb-16">
         <Header />
         <div className="page flex flex-col items-start gap-4 pt-10">
-          <p className="m-0 max-w-[460px] text-muted">Sign in to see the books you've saved — your shelf follows you to every device.</p>
+          <p className="m-0 max-w-[460px] text-muted">Sign in to see the books you've saved.</p>
           <div className="flex gap-3">
             <Link to="/login" className="btn btn-primary">Sign in</Link>
             <Link to="/signup" className="btn btn-ghost">Create a free account</Link>

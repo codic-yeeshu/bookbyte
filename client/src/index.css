@@ -90,6 +90,7 @@
     font-family: var(--font-body);
     font-size: 15px;
     line-height: 1.55;
+    font-synthesis-weight: none; /* no faux bold when a font lacks the weight */
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
@@ -109,7 +110,7 @@
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     cursor: pointer; text-decoration: none;
-    font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+    font-family: var(--font-ui); font-weight: 500;
     font-size: 14px; line-height: 1.2; color: var(--color-text);
     background: transparent; border: 1px solid transparent;
     padding: 9.2px 16.5px; border-radius: var(--radius-md);

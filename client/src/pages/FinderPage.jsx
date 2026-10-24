@@ -121,7 +121,7 @@ const FinderPage = () => {
           <h1 className="m-0 text-[46px] leading-none font-normal tracking-[-0.025em] lg:text-[76px]">
             Let's find your next <em className="text-accent">book.</em>
           </h1>
-          <span className="hidden text-[15px] text-muted italic lg:inline">Answer as many as you like — your matches update as you go.</span>
+          <span className="hidden text-[15px] text-muted italic lg:inline">Matches update as you answer.</span>
         </div>
         <div className="flex items-center gap-3 lg:flex-col lg:items-end lg:gap-2">
           {progress('flex-1 lg:order-2 lg:flex-none')}

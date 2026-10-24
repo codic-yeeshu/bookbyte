@@ -5,7 +5,7 @@ export const JOURNAL = {
     kind: 'essay',
     readMinutes: 12,
     titleParts: ['Why we keep coming back to the ', 'long', ' Victorian novel'],
-    dek: 'In an age of endless scrolling, the nine-hundred-page novel has become a strange kind of luxury: a place to stay. Our fiction desk on slowness, serials and the pleasure of not knowing how it ends.',
+    dek: 'In an age of endless scrolling, the nine-hundred-page novel has become a place to stay.',
     author: 'Ananya Rao',
     publishedAt: '2026-10-21',
   },
