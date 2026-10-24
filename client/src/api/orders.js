@@ -1,5 +1,4 @@
 import api from './axios';
-import { SAMPLE_ORDERS } from '../mocks/orders';
 
 // Admin specific APIs
 export const getAllOrders = async () => {
@@ -30,24 +29,15 @@ const STATUS_KEYS = {
   Canceled: 'cancelled',
 };
 
-// TODO(#19): today each order holds a single book.
-// Map what the API returns into the #19 shape; fall back to sample orders when it can't be read.
+// TODO(#19): today each order holds a single book. Map what the API returns into the #19 shape.
 export const getRecentOrders = async () => {
-  try {
-    const { data = [] } = await getOrderHistory();
-    return {
-      sample: false,
-      data: data.map((o) => ({
-        _id: o._id,
-        number: `BB-${o._id.slice(-5).toUpperCase()}`,
-        createdAt: o.createdAt,
-        titles: o.book ? [o.book.title] : [],
-        total: o.book?.price ?? 0,
-        status: STATUS_KEYS[o.status] ?? 'placed',
-      })),
-    };
-  } catch (err) {
-    console.warn('Order history unavailable, showing sample orders.', err);
-    return { sample: true, data: SAMPLE_ORDERS };
-  }
+  const { data = [] } = await getOrderHistory();
+  return data.map((o) => ({
+    _id: o._id,
+    number: `BB-${o._id.slice(-5).toUpperCase()}`,
+    createdAt: o.createdAt,
+    titles: o.book ? [o.book.title] : [],
+    total: o.book?.price ?? 0,
+    status: STATUS_KEYS[o.status] ?? 'placed',
+  }));
 };
