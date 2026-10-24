@@ -10,9 +10,10 @@
 @favouriteUrl = {{baseUrl}}/favourite
 @orderUrl = {{baseUrl}}/order
 
-# use the updated admin and user token.
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzQ3OTE0OTksImV4cCI6MTczNTY1NTQ5OX0.hFMpSWm6dWzKdCf8yOQj3fcvBemePCoEz94DlEaxl-c
-@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoibmV3dGVzdCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM0NzkxMzk5LCJleHAiOjE3MzU2NTUzOTl9.m-wWjChjxcgtTW58rpOQDp23aap4LUgy82wNcv6ZFk4
+# tokens come from the two sign-in requests below — run them first.
+# logins live in server/.env (gitignored): ADMIN_USERNAME, ADMIN_PASSWORD, TEST_USERNAME, TEST_PASSWORD
+@adminToken = {{adminSignIn.response.body.token}}
+@userToken = {{userSignIn.response.body.token}}
 @adminId = 6766cf890f5a6168322bbb51
 @userId = 6766cf6a0f5a6168322bbb4d
 @bookId = 6766d4a42905a337db407214
@@ -21,31 +22,37 @@
 # ========================================== AUTH ====================================================
 # ====================================================================================================
 
-# use these credentials to perform admin operations
-# {
-#     "username": "admin",
-#     "password":"admin",
-# }
-
 # sing up
 POST {{authUrl}}/sign-up
 Content-Type: application/json
 
 {
-    "username": "admin",
-    "email":"admin@gmail.com",
-    "password":"admin",
+    "username": "new-reader",
+    "email":"new-reader@example.com",
+    "password":"choose-a-password",
     "address":"dont know"
 }
 
 ###
-# sing in
-POST {{authUrl}}/sign-in 
+# sign in as admin
+# @name adminSignIn
+POST {{authUrl}}/sign-in
 Content-Type: application/json
 
 {
-    "username": "admin",
-    "password": "admin"
+    "username": "{{$dotenv ADMIN_USERNAME}}",
+    "password": "{{$dotenv ADMIN_PASSWORD}}"
+}
+
+###
+# sign in as a regular user
+# @name userSignIn
+POST {{authUrl}}/sign-in
+Content-Type: application/json
+
+{
+    "username": "{{$dotenv TEST_USERNAME}}",
+    "password": "{{$dotenv TEST_PASSWORD}}"
 }
 ###
 
