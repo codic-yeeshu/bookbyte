@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { ChevronRight } from 'lucide-react';
@@ -115,10 +115,18 @@ const ProfilePage = () => {
   const { user, isAuthenticated, setUser, logout } = useAuth();
   const navigate = useNavigate();
   const [orders, setOrders] = useState(null);
+  const [ordersStatus, setOrdersStatus] = useState('loading');
+
+  const loadOrders = useCallback(() => {
+    setOrdersStatus('loading');
+    getRecentOrders()
+      .then((data) => { setOrders(data); setOrdersStatus('ready'); })
+      .catch((err) => { console.error(err); setOrdersStatus('error'); });
+  }, []);
 
   useEffect(() => {
-    if (isAuthenticated) getRecentOrders().then(setOrders);
-  }, [isAuthenticated]);
+    if (isAuthenticated) loadOrders();
+  }, [isAuthenticated, loadOrders]);
 
   if (!isAuthenticated || !user) {
     return (
@@ -171,7 +179,7 @@ const ProfilePage = () => {
 
   // TODO(#19): books bought should count books, not single-book orders; TODO(#13): reviews written.
   const stats = [
-    { v: orders && !orders.sample ? orders.data.length : '—', k: 'Books bought' },
+    { v: ordersStatus === 'ready' ? orders.length : '—', k: 'Books bought' },
     { v: user.favourites?.length ?? 0, k: 'On your shelf' },
     { v: 0, k: 'Reviews written' },
   ];
@@ -217,12 +225,20 @@ const ProfilePage = () => {
         <section id="orders" className="flex scroll-mt-6 flex-col gap-2.5 lg:gap-4">
           <div className="flex items-baseline justify-between">
             <h2 className="m-0 text-[26px] font-medium lg:text-[34px]">Recent orders</h2>
-            {orders?.sample && <span className="text-xs text-muted italic">Sample orders — history is on its way</span>}
           </div>
-          {!orders ? (
+          {ordersStatus === 'loading' ? (
             <div className="h-28 animate-pulse rounded bg-surface" />
-          ) : orders.data.length === 0 ? (
-            <p className="m-0 text-muted italic">No orders yet — <Link to="/discover">find your first book</Link>.</p>
+          ) : ordersStatus === 'error' ? (
+            <div className="flex flex-col items-start gap-3 border-y border-divider py-6">
+              <p className="m-0 text-muted">Couldn't load your orders right now.</p>
+              <button type="button" onClick={loadOrders} className="btn btn-primary">Try again</button>
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="flex flex-col items-start gap-3 border-y border-divider py-6">
+              <p className="m-0 font-heading text-2xl">No orders yet.</p>
+              <p className="m-0 text-muted">Your first book is waiting on the shelves.</p>
+              <Link to="/discover" className="btn btn-primary">Browse the shelves</Link>
+            </div>
           ) : (
             <>
               <table className="hidden w-full border-collapse text-sm lg:table">
@@ -232,7 +248,7 @@ const ProfilePage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.data.slice(0, 5).map((o) => (
+                  {orders.slice(0, 5).map((o) => (
                     <tr key={o._id} className="border-b border-divider hover:bg-ink/[.04]">
                       <td className="p-2.5 tabular-nums">#{o.number}</td>
                       <td className="p-2.5">{formatDate(o.createdAt)}</td>
@@ -246,7 +262,7 @@ const ProfilePage = () => {
                 </tbody>
               </table>
               <div className="flex flex-col lg:hidden">
-                {orders.data.slice(0, 5).map((o) => (
+                {orders.slice(0, 5).map((o) => (
                   <div key={o._id} className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 border-b border-divider py-3.5">
                     <span className="font-heading text-[19px] font-semibold italic">{titlesLabel(o.titles)}</span>
                     <span className={`tag ${STATUS[o.status].tag}`}>{STATUS[o.status].label}</span>
