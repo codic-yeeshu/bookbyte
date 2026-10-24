@@ -7,20 +7,20 @@ const placeOrder = async (req, res) => {
     const { id } = req.user;
     const { order } = req.body;
 
+    const orderIds = [];
+    const bookIds = [];
     for (const orderData of order) {
       const newOrder = new Order({ user: id, book: orderData._id });
       const orderDataFromDb = await newOrder.save();
-
-      // saving orders to user model
-      await User.findByIdAndUpdate(id, {
-        $push: { orders: orderDataFromDb._id },
-      });
-
-      // clearing cart
-      await User.findByIdAndUpdate(id, {
-        $pull: { cart: orderDataFromDb._id },
-      });
+      orderIds.push(orderDataFromDb._id);
+      bookIds.push(orderData._id);
     }
+
+    // saving orders to user model and clearing the ordered books from the cart
+    await User.findByIdAndUpdate(id, {
+      $push: { orders: { $each: orderIds } },
+      $pull: { cart: { $in: bookIds } },
+    });
 
     return res.status(200).json({
       status: "Success",

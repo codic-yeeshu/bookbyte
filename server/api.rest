@@ -265,18 +265,16 @@ Authorization: Bearer {{adminToken}}
 POST {{orderUrl}}/place-order
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
-id: {{userId}}
 # Authorization: Bearer {{adminToken}}
 
 {
-    "order": ["6766d4a42905a337db407214"]
+    "order": [{ "_id": "6766d4a42905a337db407214" }]
 }
 
 ###
 GET {{orderUrl}}/get-order-history
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
-id: {{userId}}
 # Authorization: Bearer {{adminToken}}
 
 {
